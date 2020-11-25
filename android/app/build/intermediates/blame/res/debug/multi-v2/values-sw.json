@@ -1,7 +1,7 @@
 {
     "logs": [
         {
-            "outputFile": "D:\\Project\\React-Native\\WBcheckPoint\\android\\app\\build\\intermediates\\incremental\\mergeDebugResources\\merged.dir\\values-sw\\values-sw.xml",
+            "outputFile": "D:\\Project\\GitTEsting\\WBcheckPoint\\android\\app\\build\\intermediates\\incremental\\mergeDebugResources\\merged.dir\\values-sw\\values-sw.xml",
             "map": [
                 {
                     "source": "C:\\Users\\62120006\\.gradle\\caches\\transforms-2\\files-2.1\\a2596a23ce01d1a75438f30a681592ff\\jetified-play-services-base-16.0.1\\res\\values-sw\\values.xml",
