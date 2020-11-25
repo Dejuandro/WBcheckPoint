@@ -1,8 +1,7 @@
 import React, { useState, useContext, createContext, useEffect } from 'react';
 import { Text, View, StyleSheet, Dimensions, TextInput, TouchableOpacity, Button, Image, ScrollView, Alert } from 'react-native';
-import { AuthContainer } from '../../components/AuthContainer'
 import { RNCamera, FaceDetector } from 'react-native-camera';
-import { BeratContext } from '../../contexts/BeratContext'
+import { BeratContext } from '../../../contexts/BeratContext'
 import Modal from 'react-native-modal';
 import { Icon } from 'react-native-elements'
 

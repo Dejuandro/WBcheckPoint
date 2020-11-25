@@ -24,7 +24,8 @@ export function HomeScreen({ navigation }) {
   const [StatusColor, setStatusColor] = useState()
   const [IsPorter, setIsPorter] = useState()
   const [PorterLoadDock, setPorterLoadDock] = useState()
-  const [LoadockModal, setLoadockModal] = useState(true)
+  const [SecurityWeighBridge, setSecurityWeighBridge] = useState()
+  const [ModalPilihan, setModalPilihan] = useState(true)
 
   useEffect(() => {
     getPersonalData()
@@ -49,7 +50,7 @@ export function HomeScreen({ navigation }) {
     } else {
       // console.log('You Are Security')
       setIsPorter(false)
-      await setDataSecurity(vehicle_list_security)
+      // await setDataSecurity(vehicle_list_security)
     }
     setLoading(false)
   }
@@ -123,6 +124,32 @@ export function HomeScreen({ navigation }) {
       }, {
         "LoadDock": "5",
         "LoadDockCode": "005",
+        "Lokasi": "Pintu Selatan 001"
+      },]
+  }
+
+  const List_WeighBridge =
+  {
+    "jembatan_timbang": [
+      {
+        "timbangan": "1",
+        "timbanganCode": "001",
+        "Lokasi": "Pintu Timur 001"
+      }, {
+        "timbangan": "2",
+        "timbanganCode": "002",
+        "Lokasi": "Pintu Timur 002"
+      }, {
+        "timbangan": "3",
+        "timbanganCode": "003",
+        "Lokasi": "Pintu Barat 001"
+      }, {
+        "timbangan": "4",
+        "timbanganCode": "004",
+        "Lokasi": "Pintu Utara 001"
+      }, {
+        "timbangan": "5",
+        "timbanganCode": "005",
         "Lokasi": "Pintu Selatan 001"
       },]
   }
@@ -318,10 +345,54 @@ export function HomeScreen({ navigation }) {
     )
   }
 
+  
+  async function OnClickPilihTimbangan(TimbanganCode) {
+    await setDataSecurity(vehicle_list_security)
+    await setSecurityWeighBridge(TimbanganCode)
+    await setModalPilihan(false)
+    await setLoading(false)
+  }
+
+
+  function PilihWeighBridge() {
+    if (SecurityWeighBridge == null) {
+      return (
+        <Modal isVisible={ModalPilihan}>
+          <View style={{ backgroundColor: 'white', borderRadius: 10, padding: 10 }}>
+            <Text style={{ fontSize: 20, fontWeight: 'bold' }}>Pilih Lokasi Timbangan</Text>
+            <FlatList
+              showsVerticalScrollIndicator={false}
+              ListEmptyComponent={listEmptyComponent}
+              data={List_WeighBridge.jembatan_timbang}
+              keyExtractor={({ timbanganCode }, index) => timbanganCode}
+              renderItem={({ item }) => (
+                <View style={{ padding: 10 }}>
+                  <Button
+                    onPress={async () => {
+                      try {
+                        await setLoading(true)
+                        await OnClickPilihTimbangan(item.timbanganCode)
+                      } catch {
+                        Alert.alert('Error')
+                      }
+                    }}
+                    title={'Timbangan' + ' ' + item.timbangan} />
+                </View>
+              )} />
+          </View>
+          <Loading loading={loading} />
+        </Modal>
+      )
+    } else {
+      return (null)
+    }
+  }
+
+
   function SecurityScreen() {
     return (
-
       <AuthContainer>
+        {PilihWeighBridge()}
         <View style={styles.header}>
           <Text style={{ color: 'black', fontSize: 16 }}>{userName} </Text>
           <Text style={{ flexWrap: 'wrap', color: 'black', fontSize: 16, }} onPress={async () => {
@@ -333,7 +404,16 @@ export function HomeScreen({ navigation }) {
             }
           }}>Role : {userRole}</Text>
         </View>
-        <Text style={{ alignSelf: 'flex-start', fontSize: 25, fontWeight: 'bold', marginVertical: 10 }}>Daftar Kendaraan Security</Text>
+        <Text style={{ alignSelf: 'flex-start', fontSize: 25, fontWeight: 'bold', marginTop: 10 }}>Daftar Kendaraan Porter</Text>
+        <View style={{ flexDirection: 'row', alignSelf: 'flex-start', alignItems: 'flex-end' }}>
+          <Text style={{ alignSelf: 'flex-start', fontSize: 25, fontWeight: 'bold', marginBottom: 10 }}>Timbangan : {SecurityWeighBridge}</Text>
+          <TouchableWithoutFeedback onPress={async () => {
+            await setSecurityWeighBridge(null)
+            await setModalPilihan(true)
+          }}>
+            <Text style={{ alignSelf: 'flex-end', fontSize: 15, fontWeight: 'bold', color: 'blue', marginBottom: 10, marginLeft: 10, textDecorationLine: 'underline' }}>Ganti</Text>
+          </TouchableWithoutFeedback>
+        </View>
         <FlatList
           showsVerticalScrollIndicator={false}
           style={{ alignSelf: 'center' }}
@@ -389,14 +469,15 @@ export function HomeScreen({ navigation }) {
   async function OnClickPilihLoadDock(LoadDockCode) {
     await setDataPorter(vehicle_list_Porter)
     await setPorterLoadDock(LoadDockCode)
-    await setLoadockModal(false)
+    await setModalPilihan(false)
     await setLoading(false)
   }
+
 
   function pilihLoadDock() {
     if (PorterLoadDock == null) {
       return (
-        <Modal isVisible={LoadockModal}>
+        <Modal isVisible={ModalPilihan}>
           <View style={{ backgroundColor: 'white', borderRadius: 10, padding: 10 }}>
             <Text style={{ fontSize: 20, fontWeight: 'bold' }}>Pilih Lokasi Dock</Text>
             <FlatList
@@ -448,7 +529,7 @@ export function HomeScreen({ navigation }) {
           <Text style={{ alignSelf: 'flex-start', fontSize: 25, fontWeight: 'bold', marginBottom: 10 }}>DOCK : {PorterLoadDock}</Text>
           <TouchableWithoutFeedback onPress={async () => {
             await setPorterLoadDock(null)
-            await setLoadockModal(true)
+            await setModalPilihan(true)
           }}>
             <Text style={{ alignSelf: 'flex-end', fontSize: 15, fontWeight: 'bold', color: 'blue', marginBottom: 10, marginLeft: 10, textDecorationLine: 'underline' }}>Ganti</Text>
           </TouchableWithoutFeedback>
@@ -463,7 +544,7 @@ export function HomeScreen({ navigation }) {
             <View>
               <TouchableWithoutFeedback
                 onPress={() => {
-                  navigation.navigate('SecurityDetailScreen', {
+                  navigation.navigate('PorterDetailScreen', {
                     ID_Number: item.ID_DOC,
                   })
                 }}

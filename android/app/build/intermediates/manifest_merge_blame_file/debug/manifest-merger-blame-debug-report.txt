@@ -9,167 +9,167 @@
 9        android:targetSdkVersion="29" />
 10
 11    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
-11-->D:\Project\GitTEsting\WBcheckPoint\android\app\src\debug\AndroidManifest.xml:5:5-77
-11-->D:\Project\GitTEsting\WBcheckPoint\android\app\src\debug\AndroidManifest.xml:5:22-75
+11-->D:\Project\React-Native\WBcheckPoint\android\app\src\debug\AndroidManifest.xml:5:5-77
+11-->D:\Project\React-Native\WBcheckPoint\android\app\src\debug\AndroidManifest.xml:5:22-75
 12    <uses-permission android:name="android.permission.INTERNET" />
-12-->D:\Project\GitTEsting\WBcheckPoint\android\app\src\main\AndroidManifest.xml:4:5-67
-12-->D:\Project\GitTEsting\WBcheckPoint\android\app\src\main\AndroidManifest.xml:4:22-64
+12-->D:\Project\React-Native\WBcheckPoint\android\app\src\main\AndroidManifest.xml:4:5-67
+12-->D:\Project\React-Native\WBcheckPoint\android\app\src\main\AndroidManifest.xml:4:22-64
 13    <uses-permission android:name="android.permission.ACCEPT_HANDOVER" />
-13-->D:\Project\GitTEsting\WBcheckPoint\android\app\src\main\AndroidManifest.xml:5:5-74
-13-->D:\Project\GitTEsting\WBcheckPoint\android\app\src\main\AndroidManifest.xml:5:22-71
+13-->D:\Project\React-Native\WBcheckPoint\android\app\src\main\AndroidManifest.xml:5:5-74
+13-->D:\Project\React-Native\WBcheckPoint\android\app\src\main\AndroidManifest.xml:5:22-71
 14    <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" />
-14-->D:\Project\GitTEsting\WBcheckPoint\android\app\src\main\AndroidManifest.xml:6:5-85
-14-->D:\Project\GitTEsting\WBcheckPoint\android\app\src\main\AndroidManifest.xml:6:22-82
+14-->D:\Project\React-Native\WBcheckPoint\android\app\src\main\AndroidManifest.xml:6:5-85
+14-->D:\Project\React-Native\WBcheckPoint\android\app\src\main\AndroidManifest.xml:6:22-82
 15    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
-15-->D:\Project\GitTEsting\WBcheckPoint\android\app\src\main\AndroidManifest.xml:7:5-81
-15-->D:\Project\GitTEsting\WBcheckPoint\android\app\src\main\AndroidManifest.xml:7:22-78
+15-->D:\Project\React-Native\WBcheckPoint\android\app\src\main\AndroidManifest.xml:7:5-81
+15-->D:\Project\React-Native\WBcheckPoint\android\app\src\main\AndroidManifest.xml:7:22-78
 16    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-16-->D:\Project\GitTEsting\WBcheckPoint\android\app\src\main\AndroidManifest.xml:8:5-79
-16-->D:\Project\GitTEsting\WBcheckPoint\android\app\src\main\AndroidManifest.xml:8:22-76
+16-->D:\Project\React-Native\WBcheckPoint\android\app\src\main\AndroidManifest.xml:8:5-79
+16-->D:\Project\React-Native\WBcheckPoint\android\app\src\main\AndroidManifest.xml:8:22-76
 17    <uses-permission android:name="android.permission.ACTIVITY_RECOGNITION" />
-17-->D:\Project\GitTEsting\WBcheckPoint\android\app\src\main\AndroidManifest.xml:9:5-79
-17-->D:\Project\GitTEsting\WBcheckPoint\android\app\src\main\AndroidManifest.xml:9:22-76
+17-->D:\Project\React-Native\WBcheckPoint\android\app\src\main\AndroidManifest.xml:9:5-79
+17-->D:\Project\React-Native\WBcheckPoint\android\app\src\main\AndroidManifest.xml:9:22-76
 18    <uses-permission android:name="android.permission.ANSWER_PHONE_CALLS" />
-18-->D:\Project\GitTEsting\WBcheckPoint\android\app\src\main\AndroidManifest.xml:10:5-77
-18-->D:\Project\GitTEsting\WBcheckPoint\android\app\src\main\AndroidManifest.xml:10:22-74
+18-->D:\Project\React-Native\WBcheckPoint\android\app\src\main\AndroidManifest.xml:10:5-77
+18-->D:\Project\React-Native\WBcheckPoint\android\app\src\main\AndroidManifest.xml:10:22-74
 19    <uses-permission android:name="android.permission.BODY_SENSORS" />
-19-->D:\Project\GitTEsting\WBcheckPoint\android\app\src\main\AndroidManifest.xml:11:5-71
-19-->D:\Project\GitTEsting\WBcheckPoint\android\app\src\main\AndroidManifest.xml:11:22-68
+19-->D:\Project\React-Native\WBcheckPoint\android\app\src\main\AndroidManifest.xml:11:5-71
+19-->D:\Project\React-Native\WBcheckPoint\android\app\src\main\AndroidManifest.xml:11:22-68
 20    <uses-permission android:name="android.permission.CALL_PHONE" />
-20-->D:\Project\GitTEsting\WBcheckPoint\android\app\src\main\AndroidManifest.xml:12:5-69
-20-->D:\Project\GitTEsting\WBcheckPoint\android\app\src\main\AndroidManifest.xml:12:22-66
+20-->D:\Project\React-Native\WBcheckPoint\android\app\src\main\AndroidManifest.xml:12:5-69
+20-->D:\Project\React-Native\WBcheckPoint\android\app\src\main\AndroidManifest.xml:12:22-66
 21    <uses-permission android:name="android.permission.CAMERA" />
-21-->D:\Project\GitTEsting\WBcheckPoint\android\app\src\main\AndroidManifest.xml:13:5-65
-21-->D:\Project\GitTEsting\WBcheckPoint\android\app\src\main\AndroidManifest.xml:13:22-62
+21-->D:\Project\React-Native\WBcheckPoint\android\app\src\main\AndroidManifest.xml:13:5-65
+21-->D:\Project\React-Native\WBcheckPoint\android\app\src\main\AndroidManifest.xml:13:22-62
 22    <uses-permission android:name="android.permission.GET_ACCOUNTS" />
-22-->D:\Project\GitTEsting\WBcheckPoint\android\app\src\main\AndroidManifest.xml:14:5-71
-22-->D:\Project\GitTEsting\WBcheckPoint\android\app\src\main\AndroidManifest.xml:14:22-68
+22-->D:\Project\React-Native\WBcheckPoint\android\app\src\main\AndroidManifest.xml:14:5-71
+22-->D:\Project\React-Native\WBcheckPoint\android\app\src\main\AndroidManifest.xml:14:22-68
 23    <uses-permission android:name="android.permission.PROCESS_OUTGOING_CALLS" />
-23-->D:\Project\GitTEsting\WBcheckPoint\android\app\src\main\AndroidManifest.xml:15:5-81
-23-->D:\Project\GitTEsting\WBcheckPoint\android\app\src\main\AndroidManifest.xml:15:22-78
+23-->D:\Project\React-Native\WBcheckPoint\android\app\src\main\AndroidManifest.xml:15:5-81
+23-->D:\Project\React-Native\WBcheckPoint\android\app\src\main\AndroidManifest.xml:15:22-78
 24    <uses-permission android:name="android.permission.READ_CALENDAR" />
-24-->D:\Project\GitTEsting\WBcheckPoint\android\app\src\main\AndroidManifest.xml:16:5-72
-24-->D:\Project\GitTEsting\WBcheckPoint\android\app\src\main\AndroidManifest.xml:16:22-69
+24-->D:\Project\React-Native\WBcheckPoint\android\app\src\main\AndroidManifest.xml:16:5-72
+24-->D:\Project\React-Native\WBcheckPoint\android\app\src\main\AndroidManifest.xml:16:22-69
 25    <uses-permission android:name="android.permission.READ_CALL_LOG" />
-25-->D:\Project\GitTEsting\WBcheckPoint\android\app\src\main\AndroidManifest.xml:17:5-72
-25-->D:\Project\GitTEsting\WBcheckPoint\android\app\src\main\AndroidManifest.xml:17:22-69
+25-->D:\Project\React-Native\WBcheckPoint\android\app\src\main\AndroidManifest.xml:17:5-72
+25-->D:\Project\React-Native\WBcheckPoint\android\app\src\main\AndroidManifest.xml:17:22-69
 26    <uses-permission android:name="android.permission.READ_CONTACTS" />
-26-->D:\Project\GitTEsting\WBcheckPoint\android\app\src\main\AndroidManifest.xml:18:5-72
-26-->D:\Project\GitTEsting\WBcheckPoint\android\app\src\main\AndroidManifest.xml:18:22-69
+26-->D:\Project\React-Native\WBcheckPoint\android\app\src\main\AndroidManifest.xml:18:5-72
+26-->D:\Project\React-Native\WBcheckPoint\android\app\src\main\AndroidManifest.xml:18:22-69
 27    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-27-->D:\Project\GitTEsting\WBcheckPoint\android\app\src\main\AndroidManifest.xml:19:5-80
-27-->D:\Project\GitTEsting\WBcheckPoint\android\app\src\main\AndroidManifest.xml:19:22-77
+27-->D:\Project\React-Native\WBcheckPoint\android\app\src\main\AndroidManifest.xml:19:5-80
+27-->D:\Project\React-Native\WBcheckPoint\android\app\src\main\AndroidManifest.xml:19:22-77
 28    <uses-permission android:name="android.permission.READ_PHONE_NUMBERS" />
-28-->D:\Project\GitTEsting\WBcheckPoint\android\app\src\main\AndroidManifest.xml:20:5-77
-28-->D:\Project\GitTEsting\WBcheckPoint\android\app\src\main\AndroidManifest.xml:20:22-74
+28-->D:\Project\React-Native\WBcheckPoint\android\app\src\main\AndroidManifest.xml:20:5-77
+28-->D:\Project\React-Native\WBcheckPoint\android\app\src\main\AndroidManifest.xml:20:22-74
 29    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
-29-->D:\Project\GitTEsting\WBcheckPoint\android\app\src\main\AndroidManifest.xml:21:5-75
-29-->D:\Project\GitTEsting\WBcheckPoint\android\app\src\main\AndroidManifest.xml:21:22-72
+29-->D:\Project\React-Native\WBcheckPoint\android\app\src\main\AndroidManifest.xml:21:5-75
+29-->D:\Project\React-Native\WBcheckPoint\android\app\src\main\AndroidManifest.xml:21:22-72
 30    <uses-permission android:name="android.permission.READ_SMS" />
-30-->D:\Project\GitTEsting\WBcheckPoint\android\app\src\main\AndroidManifest.xml:22:5-67
-30-->D:\Project\GitTEsting\WBcheckPoint\android\app\src\main\AndroidManifest.xml:22:22-64
+30-->D:\Project\React-Native\WBcheckPoint\android\app\src\main\AndroidManifest.xml:22:5-67
+30-->D:\Project\React-Native\WBcheckPoint\android\app\src\main\AndroidManifest.xml:22:22-64
 31    <uses-permission android:name="android.permission.RECEIVE_MMS" />
-31-->D:\Project\GitTEsting\WBcheckPoint\android\app\src\main\AndroidManifest.xml:23:5-70
-31-->D:\Project\GitTEsting\WBcheckPoint\android\app\src\main\AndroidManifest.xml:23:22-67
+31-->D:\Project\React-Native\WBcheckPoint\android\app\src\main\AndroidManifest.xml:23:5-70
+31-->D:\Project\React-Native\WBcheckPoint\android\app\src\main\AndroidManifest.xml:23:22-67
 32    <uses-permission android:name="android.permission.RECEIVE_SMS" />
-32-->D:\Project\GitTEsting\WBcheckPoint\android\app\src\main\AndroidManifest.xml:24:5-70
-32-->D:\Project\GitTEsting\WBcheckPoint\android\app\src\main\AndroidManifest.xml:24:22-67
+32-->D:\Project\React-Native\WBcheckPoint\android\app\src\main\AndroidManifest.xml:24:5-70
+32-->D:\Project\React-Native\WBcheckPoint\android\app\src\main\AndroidManifest.xml:24:22-67
 33    <uses-permission android:name="android.permission.RECEIVE_WAP_PUSH" />
-33-->D:\Project\GitTEsting\WBcheckPoint\android\app\src\main\AndroidManifest.xml:25:5-75
-33-->D:\Project\GitTEsting\WBcheckPoint\android\app\src\main\AndroidManifest.xml:25:22-72
+33-->D:\Project\React-Native\WBcheckPoint\android\app\src\main\AndroidManifest.xml:25:5-75
+33-->D:\Project\React-Native\WBcheckPoint\android\app\src\main\AndroidManifest.xml:25:22-72
 34    <uses-permission android:name="android.permission.RECORD_AUDIO" />
-34-->D:\Project\GitTEsting\WBcheckPoint\android\app\src\main\AndroidManifest.xml:26:5-71
-34-->D:\Project\GitTEsting\WBcheckPoint\android\app\src\main\AndroidManifest.xml:26:22-68
+34-->D:\Project\React-Native\WBcheckPoint\android\app\src\main\AndroidManifest.xml:26:5-71
+34-->D:\Project\React-Native\WBcheckPoint\android\app\src\main\AndroidManifest.xml:26:22-68
 35    <uses-permission android:name="android.permission.SEND_SMS" />
-35-->D:\Project\GitTEsting\WBcheckPoint\android\app\src\main\AndroidManifest.xml:27:5-67
-35-->D:\Project\GitTEsting\WBcheckPoint\android\app\src\main\AndroidManifest.xml:27:22-64
+35-->D:\Project\React-Native\WBcheckPoint\android\app\src\main\AndroidManifest.xml:27:5-67
+35-->D:\Project\React-Native\WBcheckPoint\android\app\src\main\AndroidManifest.xml:27:22-64
 36    <uses-permission android:name="android.permission.VIBRATE" />
-36-->D:\Project\GitTEsting\WBcheckPoint\android\app\src\main\AndroidManifest.xml:28:5-65
-36-->D:\Project\GitTEsting\WBcheckPoint\android\app\src\main\AndroidManifest.xml:28:22-63
+36-->D:\Project\React-Native\WBcheckPoint\android\app\src\main\AndroidManifest.xml:28:5-65
+36-->D:\Project\React-Native\WBcheckPoint\android\app\src\main\AndroidManifest.xml:28:22-63
 37    <uses-permission android:name="android.permission.USE_SIP" />
-37-->D:\Project\GitTEsting\WBcheckPoint\android\app\src\main\AndroidManifest.xml:29:5-66
-37-->D:\Project\GitTEsting\WBcheckPoint\android\app\src\main\AndroidManifest.xml:29:22-63
+37-->D:\Project\React-Native\WBcheckPoint\android\app\src\main\AndroidManifest.xml:29:5-66
+37-->D:\Project\React-Native\WBcheckPoint\android\app\src\main\AndroidManifest.xml:29:22-63
 38    <uses-permission android:name="android.permission.WRITE_CALENDAR" />
-38-->D:\Project\GitTEsting\WBcheckPoint\android\app\src\main\AndroidManifest.xml:30:5-73
-38-->D:\Project\GitTEsting\WBcheckPoint\android\app\src\main\AndroidManifest.xml:30:22-70
+38-->D:\Project\React-Native\WBcheckPoint\android\app\src\main\AndroidManifest.xml:30:5-73
+38-->D:\Project\React-Native\WBcheckPoint\android\app\src\main\AndroidManifest.xml:30:22-70
 39    <uses-permission android:name="android.permission.WRITE_CALL_LOG" />
-39-->D:\Project\GitTEsting\WBcheckPoint\android\app\src\main\AndroidManifest.xml:31:5-73
-39-->D:\Project\GitTEsting\WBcheckPoint\android\app\src\main\AndroidManifest.xml:31:22-70
+39-->D:\Project\React-Native\WBcheckPoint\android\app\src\main\AndroidManifest.xml:31:5-73
+39-->D:\Project\React-Native\WBcheckPoint\android\app\src\main\AndroidManifest.xml:31:22-70
 40    <uses-permission android:name="android.permission.WRITE_CONTACTS" />
-40-->D:\Project\GitTEsting\WBcheckPoint\android\app\src\main\AndroidManifest.xml:32:5-73
-40-->D:\Project\GitTEsting\WBcheckPoint\android\app\src\main\AndroidManifest.xml:32:22-70
+40-->D:\Project\React-Native\WBcheckPoint\android\app\src\main\AndroidManifest.xml:32:5-73
+40-->D:\Project\React-Native\WBcheckPoint\android\app\src\main\AndroidManifest.xml:32:22-70
 41    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-41-->D:\Project\GitTEsting\WBcheckPoint\android\app\src\main\AndroidManifest.xml:33:5-81
-41-->D:\Project\GitTEsting\WBcheckPoint\android\app\src\main\AndroidManifest.xml:33:22-78
+41-->D:\Project\React-Native\WBcheckPoint\android\app\src\main\AndroidManifest.xml:33:5-81
+41-->D:\Project\React-Native\WBcheckPoint\android\app\src\main\AndroidManifest.xml:33:22-78
 42    <uses-permission android:name="com.android.voicemail.permission.ADD_VOICEMAIL" />
-42-->D:\Project\GitTEsting\WBcheckPoint\android\app\src\main\AndroidManifest.xml:34:5-86
-42-->D:\Project\GitTEsting\WBcheckPoint\android\app\src\main\AndroidManifest.xml:34:22-83
+42-->D:\Project\React-Native\WBcheckPoint\android\app\src\main\AndroidManifest.xml:34:5-86
+42-->D:\Project\React-Native\WBcheckPoint\android\app\src\main\AndroidManifest.xml:34:22-83
 43    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
 43-->[com.facebook.flipper:flipper:0.54.0] C:\Users\62120006\.gradle\caches\transforms-2\files-2.1\1c7787ec82631e0394972c76bdabe608\flipper-0.54.0\AndroidManifest.xml:16:5-76
 43-->[com.facebook.flipper:flipper:0.54.0] C:\Users\62120006\.gradle\caches\transforms-2\files-2.1\1c7787ec82631e0394972c76bdabe608\flipper-0.54.0\AndroidManifest.xml:16:22-73
 44
 45    <uses-feature
-45-->[:react-native-camera] D:\Project\GitTEsting\WBcheckPoint\node_modules\react-native-camera\android\build\intermediates\library_manifest\generalDebug\AndroidManifest.xml:11:5-13:36
+45-->[:react-native-camera] D:\Project\React-Native\WBcheckPoint\node_modules\react-native-camera\android\build\intermediates\library_manifest\generalDebug\AndroidManifest.xml:11:5-13:36
 46        android:name="android.hardware.camera"
-46-->[:react-native-camera] D:\Project\GitTEsting\WBcheckPoint\node_modules\react-native-camera\android\build\intermediates\library_manifest\generalDebug\AndroidManifest.xml:12:9-47
+46-->[:react-native-camera] D:\Project\React-Native\WBcheckPoint\node_modules\react-native-camera\android\build\intermediates\library_manifest\generalDebug\AndroidManifest.xml:12:9-47
 47        android:required="false" />
-47-->[:react-native-camera] D:\Project\GitTEsting\WBcheckPoint\node_modules\react-native-camera\android\build\intermediates\library_manifest\generalDebug\AndroidManifest.xml:13:9-33
+47-->[:react-native-camera] D:\Project\React-Native\WBcheckPoint\node_modules\react-native-camera\android\build\intermediates\library_manifest\generalDebug\AndroidManifest.xml:13:9-33
 48    <uses-feature
-48-->[:react-native-camera] D:\Project\GitTEsting\WBcheckPoint\node_modules\react-native-camera\android\build\intermediates\library_manifest\generalDebug\AndroidManifest.xml:14:5-16:36
+48-->[:react-native-camera] D:\Project\React-Native\WBcheckPoint\node_modules\react-native-camera\android\build\intermediates\library_manifest\generalDebug\AndroidManifest.xml:14:5-16:36
 49        android:name="android.hardware.camera.autofocus"
-49-->[:react-native-camera] D:\Project\GitTEsting\WBcheckPoint\node_modules\react-native-camera\android\build\intermediates\library_manifest\generalDebug\AndroidManifest.xml:15:9-57
+49-->[:react-native-camera] D:\Project\React-Native\WBcheckPoint\node_modules\react-native-camera\android\build\intermediates\library_manifest\generalDebug\AndroidManifest.xml:15:9-57
 50        android:required="false" />
-50-->[:react-native-camera] D:\Project\GitTEsting\WBcheckPoint\node_modules\react-native-camera\android\build\intermediates\library_manifest\generalDebug\AndroidManifest.xml:16:9-33
+50-->[:react-native-camera] D:\Project\React-Native\WBcheckPoint\node_modules\react-native-camera\android\build\intermediates\library_manifest\generalDebug\AndroidManifest.xml:16:9-33
 51
 52    <uses-permission android:name="android.permission.USE_FINGERPRINT" />
-52-->[:react-native-secure-storage] D:\Project\GitTEsting\WBcheckPoint\node_modules\react-native-secure-storage\android\build\intermediates\library_manifest\debug\AndroidManifest.xml:11:5-74
-52-->[:react-native-secure-storage] D:\Project\GitTEsting\WBcheckPoint\node_modules\react-native-secure-storage\android\build\intermediates\library_manifest\debug\AndroidManifest.xml:11:22-71
+52-->[:react-native-secure-storage] D:\Project\React-Native\WBcheckPoint\node_modules\react-native-secure-storage\android\build\intermediates\library_manifest\debug\AndroidManifest.xml:11:5-74
+52-->[:react-native-secure-storage] D:\Project\React-Native\WBcheckPoint\node_modules\react-native-secure-storage\android\build\intermediates\library_manifest\debug\AndroidManifest.xml:11:22-71
 53
 54    <application
-54-->D:\Project\GitTEsting\WBcheckPoint\android\app\src\main\AndroidManifest.xml:37:5-56:19
+54-->D:\Project\React-Native\WBcheckPoint\android\app\src\main\AndroidManifest.xml:37:5-56:19
 55        android:name="com.wbcheckpoint.MainApplication"
-55-->D:\Project\GitTEsting\WBcheckPoint\android\app\src\main\AndroidManifest.xml:38:7-38
+55-->D:\Project\React-Native\WBcheckPoint\android\app\src\main\AndroidManifest.xml:38:7-38
 56        android:allowBackup="false"
-56-->D:\Project\GitTEsting\WBcheckPoint\android\app\src\main\AndroidManifest.xml:42:7-34
+56-->D:\Project\React-Native\WBcheckPoint\android\app\src\main\AndroidManifest.xml:42:7-34
 57        android:appComponentFactory="androidx.core.app.CoreComponentFactory"
 57-->[androidx.core:core:1.1.0] C:\Users\62120006\.gradle\caches\transforms-2\files-2.1\639e914bfc1efa21e36199d3ff2c5eef\core-1.1.0\AndroidManifest.xml:24:18-86
 58        android:debuggable="true"
 59        android:icon="@mipmap/ic_launcher"
-59-->D:\Project\GitTEsting\WBcheckPoint\android\app\src\main\AndroidManifest.xml:40:7-41
+59-->D:\Project\React-Native\WBcheckPoint\android\app\src\main\AndroidManifest.xml:40:7-41
 60        android:label="@string/app_name"
-60-->D:\Project\GitTEsting\WBcheckPoint\android\app\src\main\AndroidManifest.xml:39:7-39
+60-->D:\Project\React-Native\WBcheckPoint\android\app\src\main\AndroidManifest.xml:39:7-39
 61        android:roundIcon="@mipmap/ic_launcher_round"
-61-->D:\Project\GitTEsting\WBcheckPoint\android\app\src\main\AndroidManifest.xml:41:7-52
+61-->D:\Project\React-Native\WBcheckPoint\android\app\src\main\AndroidManifest.xml:41:7-52
 62        android:theme="@style/AppTheme"
-62-->D:\Project\GitTEsting\WBcheckPoint\android\app\src\main\AndroidManifest.xml:43:7-38
+62-->D:\Project\React-Native\WBcheckPoint\android\app\src\main\AndroidManifest.xml:43:7-38
 63        android:usesCleartextTraffic="true" >
-63-->D:\Project\GitTEsting\WBcheckPoint\android\app\src\debug\AndroidManifest.xml:7:18-53
+63-->D:\Project\React-Native\WBcheckPoint\android\app\src\debug\AndroidManifest.xml:7:18-53
 64        <activity
-64-->D:\Project\GitTEsting\WBcheckPoint\android\app\src\main\AndroidManifest.xml:44:7-54:18
+64-->D:\Project\React-Native\WBcheckPoint\android\app\src\main\AndroidManifest.xml:44:7-54:18
 65            android:name="com.wbcheckpoint.MainActivity"
-65-->D:\Project\GitTEsting\WBcheckPoint\android\app\src\main\AndroidManifest.xml:45:9-37
+65-->D:\Project\React-Native\WBcheckPoint\android\app\src\main\AndroidManifest.xml:45:9-37
 66            android:configChanges="keyboard|keyboardHidden|orientation|screenSize|uiMode"
-66-->D:\Project\GitTEsting\WBcheckPoint\android\app\src\main\AndroidManifest.xml:47:9-86
+66-->D:\Project\React-Native\WBcheckPoint\android\app\src\main\AndroidManifest.xml:47:9-86
 67            android:label="@string/app_name"
-67-->D:\Project\GitTEsting\WBcheckPoint\android\app\src\main\AndroidManifest.xml:46:9-41
+67-->D:\Project\React-Native\WBcheckPoint\android\app\src\main\AndroidManifest.xml:46:9-41
 68            android:launchMode="singleTask"
-68-->D:\Project\GitTEsting\WBcheckPoint\android\app\src\main\AndroidManifest.xml:48:9-40
+68-->D:\Project\React-Native\WBcheckPoint\android\app\src\main\AndroidManifest.xml:48:9-40
 69            android:windowSoftInputMode="adjustResize" >
-69-->D:\Project\GitTEsting\WBcheckPoint\android\app\src\main\AndroidManifest.xml:49:9-51
+69-->D:\Project\React-Native\WBcheckPoint\android\app\src\main\AndroidManifest.xml:49:9-51
 70            <intent-filter>
-70-->D:\Project\GitTEsting\WBcheckPoint\android\app\src\main\AndroidManifest.xml:50:9-53:25
+70-->D:\Project\React-Native\WBcheckPoint\android\app\src\main\AndroidManifest.xml:50:9-53:25
 71                <action android:name="android.intent.action.MAIN" />
-71-->D:\Project\GitTEsting\WBcheckPoint\android\app\src\main\AndroidManifest.xml:51:13-65
-71-->D:\Project\GitTEsting\WBcheckPoint\android\app\src\main\AndroidManifest.xml:51:21-62
+71-->D:\Project\React-Native\WBcheckPoint\android\app\src\main\AndroidManifest.xml:51:13-65
+71-->D:\Project\React-Native\WBcheckPoint\android\app\src\main\AndroidManifest.xml:51:21-62
 72
 73                <category android:name="android.intent.category.LAUNCHER" />
-73-->D:\Project\GitTEsting\WBcheckPoint\android\app\src\main\AndroidManifest.xml:52:13-73
-73-->D:\Project\GitTEsting\WBcheckPoint\android\app\src\main\AndroidManifest.xml:52:23-70
+73-->D:\Project\React-Native\WBcheckPoint\android\app\src\main\AndroidManifest.xml:52:13-73
+73-->D:\Project\React-Native\WBcheckPoint\android\app\src\main\AndroidManifest.xml:52:23-70
 74            </intent-filter>
 75        </activity>
 76        <activity android:name="com.facebook.react.devsupport.DevSettingsActivity" />
-76-->D:\Project\GitTEsting\WBcheckPoint\android\app\src\main\AndroidManifest.xml:55:7-84
-76-->D:\Project\GitTEsting\WBcheckPoint\android\app\src\main\AndroidManifest.xml:55:17-81
+76-->D:\Project\React-Native\WBcheckPoint\android\app\src\main\AndroidManifest.xml:55:7-84
+76-->D:\Project\React-Native\WBcheckPoint\android\app\src\main\AndroidManifest.xml:55:17-81
 77        <activity
 77-->[com.google.android.gms:play-services-base:16.0.1] C:\Users\62120006\.gradle\caches\transforms-2\files-2.1\a2596a23ce01d1a75438f30a681592ff\jetified-play-services-base-16.0.1\AndroidManifest.xml:23:9-26:75
 78            android:name="com.google.android.gms.common.api.GoogleApiActivity"

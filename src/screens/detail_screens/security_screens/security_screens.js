@@ -2,7 +2,7 @@ import React, {useState, useEffect} from 'react';
 import { Text, View, StyleSheet, Dimensions, TextInput, TouchableOpacity, Button, Image, ScrollView, Alert } from 'react-native';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import BeratKendaraan from './beratkendaraan'
-import {BeratContext} from '../../contexts/BeratContext'
+import {BeratContext} from '../../../contexts/BeratContext'
 import {KondisiKendaraan} from './kondisikendaraan'
 import { cos } from 'react-native-reanimated';
 

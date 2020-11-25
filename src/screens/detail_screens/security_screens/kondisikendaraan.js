@@ -5,7 +5,7 @@ import Modal from 'react-native-modal';
 import { RNCamera, FaceDetector } from 'react-native-camera';
 import RadioForm, { RadioButton, RadioButtonInput, RadioButtonLabel } from 'react-native-simple-radio-button';
 import { Icon } from 'react-native-elements'
-import {BeratContext} from '../../contexts/BeratContext'
+import {BeratContext} from '../../../contexts/BeratContext'
 
 
 export function KondisiKendaraan({ data_detail }) {
