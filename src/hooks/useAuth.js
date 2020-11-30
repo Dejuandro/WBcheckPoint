@@ -39,7 +39,7 @@ export function useAuth() {
   const auth = React.useMemo(
     () => ({
       Loginfunction: async (email, password) => {
-        await fetch(`${BASE_URL}resource/Authentication`, {
+        await fetch(`${BASE_URL}authenticationservice/v1/resource/Authentication`, {
           method: 'POST',
           headers: {
             Accept: 'application/json',
@@ -51,11 +51,11 @@ export function useAuth() {
           })
         })
           .then((res) => {
-            console.log(res.status)
             if (res.status !== 200) {
               console.log(res.status)
               Alert.alert('Wrong User Name')
             } else {
+              console.log('Sukses Login')
               return res.json()
             }
           })

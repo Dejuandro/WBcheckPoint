@@ -15,6 +15,7 @@ export function HomeScreen({ navigation }) {
 
   const [loading, setLoading] = useState(true);
   const [token, setToken] = useState()
+  const [fullName, setfullName] = useState()
   const [userName, setuserName] = useState()
   const [userRole, setuserRole] = useState()
   const { logout } = useContext(AuthContext);
@@ -23,38 +24,62 @@ export function HomeScreen({ navigation }) {
   const [isVisibleScan, setisVisibleScan] = useState(false)
   const [StatusColor, setStatusColor] = useState()
   const [IsPorter, setIsPorter] = useState()
-  const [PorterLoadDock, setPorterLoadDock] = useState()
+  const [PorterLoadDock, setPorterLoadDock] = useState(null)
   const [SecurityWeighBridge, setSecurityWeighBridge] = useState()
+  const [SecurityWeighBridgeCode, setSecurityWeighBridgeCode] = useState()
+  const [ListWeighBridge, setListWeighBridge] = useState()
   const [ModalPilihan, setModalPilihan] = useState(true)
 
   useEffect(() => {
-    getPersonalData()
+    firstLoad()
   }, [])
 
-  function starting() {
-    return (
-      <View><Text>Starting</Text></View>
-    )
-  }
 
-  async function getPersonalData() {
-    const name = await SecureStorage.getItem('user_name')
-    await setuserName(JSON.parse(name))
-    const role = await SecureStorage.getItem('user_role')
-    await setuserRole(JSON.parse(role))
-    const Porter = JSON.stringify("Porter")
-    if (role == Porter) {
-      // console.log('You Are Porter')
-      setIsPorter(true)
-      // await setDataPorter(vehicle_list_Porter)
-    } else {
-      // console.log('You Are Security')
-      setIsPorter(false)
-      // await setDataSecurity(vehicle_list_security)
+
+  async function firstLoad() {
+    try {
+      const name = await SecureStorage.getItem('token')
+      await setuserName(name)
+      const FullName = await SecureStorage.getItem('user_name')
+      await setfullName(JSON.parse(FullName))
+      const role = await SecureStorage.getItem('user_role')
+      await setuserRole(JSON.parse(role))
+      const Porter = JSON.stringify("Porter")
+      if (role == Porter) {
+        console.log('You Are Porter')
+        await setIsPorter(true)
+        // await setDataPorter(vehicle_list_Porter)
+      } else {
+        console.log('You Are Security')
+        await getWeighBridgeList(name, role)
+        await setIsPorter(false)
+      }
+      await setLoading(false)
+    } catch {
+      Alert.alert('Error')
     }
-    setLoading(false)
   }
 
+  async function getWeighBridgeList(nameUser, roleUser) {
+    await fetch(`${BASE_URL}wbs/v1/GetWBListByRole/${JSON.parse(nameUser)}/${JSON.parse(roleUser)}`, {
+      method: 'Get',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json'
+      }
+    })
+      .then((res) => {
+        if (res.status !== 200) {
+          Alert.alert('Gagal Mengambil Daftar Timbangan')
+        } else {
+          return res.json()
+        }
+      })
+      .then((json) => {
+        console.log(json)
+        setListWeighBridge(json.Data)
+      })
+  }
   const vehicle_list_security =
   {
     "DataList": [
@@ -124,32 +149,6 @@ export function HomeScreen({ navigation }) {
       }, {
         "LoadDock": "5",
         "LoadDockCode": "005",
-        "Lokasi": "Pintu Selatan 001"
-      },]
-  }
-
-  const List_WeighBridge =
-  {
-    "jembatan_timbang": [
-      {
-        "timbangan": "1",
-        "timbanganCode": "001",
-        "Lokasi": "Pintu Timur 001"
-      }, {
-        "timbangan": "2",
-        "timbanganCode": "002",
-        "Lokasi": "Pintu Timur 002"
-      }, {
-        "timbangan": "3",
-        "timbanganCode": "003",
-        "Lokasi": "Pintu Barat 001"
-      }, {
-        "timbangan": "4",
-        "timbanganCode": "004",
-        "Lokasi": "Pintu Utara 001"
-      }, {
-        "timbangan": "5",
-        "timbanganCode": "005",
         "Lokasi": "Pintu Selatan 001"
       },]
   }
@@ -336,6 +335,7 @@ export function HomeScreen({ navigation }) {
           borderWidth: 0.7,
           borderColor: 'grey'
         }}>
+
           <Text style={{ color: 'black' }}>Status : </Text>
           <Text style={{ flexWrap: 'wrap', color: 'black', fontSize: 16 }}>{item.status}</Text>
         </View>
@@ -345,17 +345,23 @@ export function HomeScreen({ navigation }) {
     )
   }
 
-  
-  async function OnClickPilihTimbangan(TimbanganCode) {
-    await setDataSecurity(vehicle_list_security)
-    await setSecurityWeighBridge(TimbanganCode)
-    await setModalPilihan(false)
-    await setLoading(false)
+
+  async function OnClickPilihTimbangan(NamaTimbangan, TimbanganCode) {
+    try {
+      // HIT API GET DAFTAR KENDARAAN SECURITY DISINI
+      await setDataSecurity(vehicle_list_security)
+      await setSecurityWeighBridge(NamaTimbangan)
+      await setSecurityWeighBridgeCode(TimbanganCode)
+      await setModalPilihan(false)
+      await setLoading(false)
+    } catch {
+      Alert.alert('Error Pilih Timbangan')
+    }
   }
 
 
   function PilihWeighBridge() {
-    if (SecurityWeighBridge == null) {
+    if (SecurityWeighBridgeCode == null) {
       return (
         <Modal isVisible={ModalPilihan}>
           <View style={{ backgroundColor: 'white', borderRadius: 10, padding: 10 }}>
@@ -363,7 +369,7 @@ export function HomeScreen({ navigation }) {
             <FlatList
               showsVerticalScrollIndicator={false}
               ListEmptyComponent={listEmptyComponent}
-              data={List_WeighBridge.jembatan_timbang}
+              data={ListWeighBridge}
               keyExtractor={({ timbanganCode }, index) => timbanganCode}
               renderItem={({ item }) => (
                 <View style={{ padding: 10 }}>
@@ -371,16 +377,16 @@ export function HomeScreen({ navigation }) {
                     onPress={async () => {
                       try {
                         await setLoading(true)
-                        await OnClickPilihTimbangan(item.timbanganCode)
+                        await OnClickPilihTimbangan(item.NamaTimbangan, item.timbanganCode)
                       } catch {
-                        Alert.alert('Error')
+                        Alert.alert('Error Pilih Timbangan')
                       }
                     }}
-                    title={'Timbangan' + ' ' + item.timbangan} />
+                    title={item.NamaTimbangan} />
                 </View>
               )} />
           </View>
-          <Loading loading={loading} />
+          {/* <Loading loading={loading} /> */}
         </Modal>
       )
     } else {
@@ -394,7 +400,7 @@ export function HomeScreen({ navigation }) {
       <AuthContainer>
         {PilihWeighBridge()}
         <View style={styles.header}>
-          <Text style={{ color: 'black', fontSize: 16 }}>{userName} </Text>
+          <Text style={{ color: 'black', fontSize: 16 }}>{fullName} </Text>
           <Text style={{ flexWrap: 'wrap', color: 'black', fontSize: 16, }} onPress={async () => {
             try {
               await setLoading(true)
@@ -404,15 +410,23 @@ export function HomeScreen({ navigation }) {
             }
           }}>Role : {userRole}</Text>
         </View>
-        <Text style={{ alignSelf: 'flex-start', fontSize: 25, fontWeight: 'bold', marginTop: 10 }}>Daftar Kendaraan Porter</Text>
-        <View style={{ flexDirection: 'row', alignSelf: 'flex-start', alignItems: 'flex-end' }}>
-          <Text style={{ alignSelf: 'flex-start', fontSize: 25, fontWeight: 'bold', marginBottom: 10 }}>Timbangan : {SecurityWeighBridge}</Text>
-          <TouchableWithoutFeedback onPress={async () => {
-            await setSecurityWeighBridge(null)
-            await setModalPilihan(true)
-          }}>
-            <Text style={{ alignSelf: 'flex-end', fontSize: 15, fontWeight: 'bold', color: 'blue', marginBottom: 10, marginLeft: 10, textDecorationLine: 'underline' }}>Ganti</Text>
-          </TouchableWithoutFeedback>
+        <Text style={{ alignSelf: 'flex-start', fontSize: 25, fontWeight: 'bold', marginTop: 10 }}>Daftar Kendaraan Security</Text>
+        <View style={{ flexDirection: 'row', alignSelf: 'flex-start', alignItems: 'flex-start' }}>
+          <Text style={{ alignSelf: 'flex-start', fontSize: 15, fontWeight: 'bold', marginBottom: 10 }}>Timbangan : {SecurityWeighBridge}</Text>
+          <View style={{ alignSelf: 'flex-start', marginHorizontal: 15 }}>
+            <Button
+              onPress={async () => {
+                try {
+                  await setLoading(true)
+                  await firstLoad()
+                  await setSecurityWeighBridgeCode(null)
+                  await setModalPilihan(true)
+                } catch {
+                  console.log('Error')
+                }
+              }}
+              title={'Tukar'} />
+          </View>
         </View>
         <FlatList
           showsVerticalScrollIndicator={false}
@@ -514,7 +528,7 @@ export function HomeScreen({ navigation }) {
       <AuthContainer>
         {pilihLoadDock()}
         <View style={styles.header}>
-          <Text style={{ color: 'black', fontSize: 16 }}>{userName} </Text>
+          <Text style={{ color: 'black', fontSize: 16 }}>{fullName} </Text>
           <Text style={{ flexWrap: 'wrap', color: 'black', fontSize: 16, }} onPress={async () => {
             try {
               await setLoading(true)
@@ -525,14 +539,20 @@ export function HomeScreen({ navigation }) {
           }}>Role : {userRole}</Text>
         </View>
         <Text style={{ alignSelf: 'flex-start', fontSize: 25, fontWeight: 'bold', marginTop: 10 }}>Daftar Kendaraan Porter</Text>
-        <View style={{ flexDirection: 'row', alignSelf: 'flex-start', alignItems: 'flex-end' }}>
-          <Text style={{ alignSelf: 'flex-start', fontSize: 25, fontWeight: 'bold', marginBottom: 10 }}>DOCK : {PorterLoadDock}</Text>
-          <TouchableWithoutFeedback onPress={async () => {
-            await setPorterLoadDock(null)
-            await setModalPilihan(true)
-          }}>
-            <Text style={{ alignSelf: 'flex-end', fontSize: 15, fontWeight: 'bold', color: 'blue', marginBottom: 10, marginLeft: 10, textDecorationLine: 'underline' }}>Ganti</Text>
-          </TouchableWithoutFeedback>
+        <View style={{ flexDirection: 'row', alignSelf: 'flex-start', alignItems: 'flex-end', alignContent: 'center' }}>
+          <Text style={{ alignSelf: 'flex-start', fontSize: 15, fontWeight: 'bold', marginBottom: 10 }}>DOCK : {PorterLoadDock}</Text>
+          <View style={{ alignSelf: 'flex-start', marginHorizontal: 20 }}>
+            <Button
+              onPress={async () => {
+                try {
+                  await setPorterLoadDock(null)
+                  await setModalPilihan(true)
+                } catch {
+                  console.log('Error')
+                }
+              }}
+              title={'Tukar'} />
+          </View>
         </View>
         <FlatList
           showsVerticalScrollIndicator={false}
