@@ -53,7 +53,7 @@ export function useAuth() {
           .then((res) => {
             if (res.status !== 200) {
               console.log(res.status)
-              Alert.alert('Wrong User Name')
+              Alert.alert('Wrong User Name/Password')
             } else {
               console.log('Sukses Login')
               return res.json()

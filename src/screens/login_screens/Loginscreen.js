@@ -42,8 +42,8 @@ export function Loginscreen({ navigation }) {
     
     const [loading, setLoading] = useState(false);
     const {Loginfunction} = useContext(AuthContext);
-    const [email, setEmail] = useState("darmansius");
-    const [password, setPassword] = useState('123456')
+    const [email, setEmail] = useState("security1");
+    const [password, setPassword] = useState('1')
     const [required, setRequired] = useState(false)
 
 
@@ -56,7 +56,7 @@ export function Loginscreen({ navigation }) {
                 <InputText style={styles.TextInput} placeholder={'Email'} secureTextEntry={false}  value={email} onChangeText={setEmail} keyboardType="email-address" />
                 <InputText style={styles.TextInput} placeholder={'Password'} secureTextEntry={true} required={true} value={password} onChangeText={setPassword} />
                 <View style={{ alignSelf: 'flex-start' }}>
-                    <Text style={{ color: 'red', fontSize: 15 }}>{required ? "*Username and Password are Required*" : ""}</Text>
+                    <Text style={{ color: 'red', fontSize: 15 }}>{required ? "*Error Login*" : ""}</Text>
                 </View>
                 <TouchableHighlight
                     style={styles.loginBtn}

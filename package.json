@@ -16,6 +16,7 @@
     "@react-navigation/stack": "^5.12.3",
     "axios": "^0.21.0",
     "react": "16.13.1",
+    "react-hook-form": "^6.12.1",
     "react-native": "0.63.3",
     "react-native-awesome-loading": "^1.0.15",
     "react-native-camera": "^3.40.0",

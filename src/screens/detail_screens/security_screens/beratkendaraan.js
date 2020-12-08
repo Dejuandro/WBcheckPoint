@@ -8,13 +8,14 @@ import { Icon } from 'react-native-elements'
 
 function BeratKendaraan({ data_detail, navigation }) {
 
+
   const { databerat } = useContext(BeratContext)
   const { kirimData } = useContext(BeratContext)
   const [camera, setCamera] = useState();
   const [openCamera, setopenCamera] = useState(false);
   const [ImageBerat, setImageBerat] = useState()
-  const [Berat, setBerat] = useState('')
-  const [NoteBerat, setNoteBerat] = useState(null)
+  const [Berat, setBerat] = useState()
+  const [NoteBerat, setNoteBerat] = useState()
 
   useEffect(() => {
     databerat(Berat, NoteBerat, ImageBerat)
@@ -95,10 +96,11 @@ function BeratKendaraan({ data_detail, navigation }) {
           flexDirection: 'row',
           justifyContent: 'space-between',
           width: '90%',
-          alignSelf: 'flex-start'
+          alignSelf: 'flex-start',
+          alignItems:'center'
         }}>
-          <Text style={{ flexWrap: 'wrap', fontWeight: 'bold', fontSize: 20 }} numberOfLines={1}>{data_detail.No_Plat}</Text>
-          <Text style={{ flexWrap: 'wrap', fontWeight: 'bold', fontSize: 20 }}>{data_detail.doc_id}</Text>
+          <Text style={{ flexWrap: 'wrap', fontWeight: 'bold', fontSize: 20 }} numberOfLines={1}>No. Plat : {data_detail.No_Plat}</Text>
+          <Text style={{ flexWrap: 'wrap', fontWeight: 'bold', fontSize: 15 }}>{data_detail.id_transaksi}</Text>
         </View>
 
 
