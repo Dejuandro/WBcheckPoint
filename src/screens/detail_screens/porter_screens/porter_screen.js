@@ -2,7 +2,9 @@ import React, {useState, useEffect} from 'react';
 import { Text, View, StyleSheet, Dimensions, TextInput, TouchableOpacity, Button, Image, ScrollView, Alert } from 'react-native';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import {ListBarang} from './ListBarang'
-import {BeratContext} from '../../../contexts/BeratContext'
+import { Loading } from '../../../components/Loading';
+import {PorterContext} from '../../../contexts/PorterContext'
+import { BASE_URL } from '../../../config/index';
 import {DetailKendaraan} from './DetailKendaraan'
 
 
@@ -10,35 +12,123 @@ import {DetailKendaraan} from './DetailKendaraan'
 
 const Tab = createMaterialTopTabNavigator();
 
-export function PorterDetailScreen({ route }) {
+export function PorterDetailScreen({ route, navigation }) {
 
-  const detail_dataPorter = {
-    doc_id: route.params.ID_Number,
-    nama_supir: 'Janurdin',
-    No_Plat: 'B 3244 NO',
-    tanggal: '24/10/2020',
-    pukul: '09:12',
-    vendor: 'PT. Kesatria',
-    status: 'security1',
-    jumlah_dongkrak: 2,
-    jumlah_roda_ban: 6,
-    jumlah_roda_ban_serap: 2,
-    kendaraan: 'Mitshubishi Colt Diesel'
+  
+  const [DetailData, setDetailData] = useState()
+  const [loading, setLoading] = useState(true)
+  
+  useEffect(() => {
+    getDataDetails()
+  }, [])
+
+  
+  const data_listBarang = {
+    "dock": route.params.dock,
+    "status": "200",
+    "message": "sukses",
+    "Data": {
+      "id_transaksi": route.params.id_transaksi,
+      "nama_supir": "Janurdin",
+      "No_Plat": "B 3244 NO",
+      "tanggal": "24/10/2020",
+      "pukul": "'09:12'",
+      "vendor": "PT. Kesatria",
+      "status": "Dock",
+      "Item": [
+        {
+          "itemCode": "001",
+          "nama": "Beras",
+          "jumlah": "25 karung",
+          "itemStatus": "false",
+        }, {
+          "itemCode": "002",
+          "nama": "Tepung Terigu",
+          "jumlah": "35 Karung",
+          "itemStatus": "false",
+        }, {
+          "itemCode": "003",
+          "nama": "Gula",
+          "jumlah": "12 Karung",
+          "itemStatus": "false",
+        }, {
+          "itemCode": "004",
+          "nama": "Besi Ulir",
+          "jumlah": "120 Batang",
+          "itemStatus": "false",
+        }
+      ],
+      "DockList": [
+        {
+          "DockName": "Dock 001",
+          "DockCode": "dock001",
+          "DockStatus": "false"
+        }, {
+          "DockName": "Dock 002",
+          "DockCode": "dock002",
+          "DockStatus": "false"
+        }
+      ]
+    }
   }
 
-  const datar = React.useMemo(
+
+  async function getDataDetails() {
+    try {
+      await fetch(`${BASE_URL}cpapi/v1/Transaction/Dock_GetDetailVehicle/${route.params.id_transaksi}/${route.params.username}/${route.params.dockCode}`, {
+        method: 'Get',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json'
+        }
+      })
+        .then(async (res) => {
+          if (res.status == 400) {
+            const resJson = await res.json()
+            Alert.alert("Timbangan Seharusnya : " + '\n' + resJson.Data)
+            navigation.popToTop()
+          } else {
+            if (res.status !== 200) {
+              console.log(res)
+              Alert.alert('Gagal Mengambil Daftar Timbangan')
+              navigation.popToTop()
+            } else {
+              const resJson = await res.json()
+              resJson.dockCode = route.params.dockCode
+              setDetailData(resJson)
+              setLoading(false)
+            }
+          }
+        })
+
+
+      
+    } catch (err){
+      console.log(err)
+      Alert.alert('Error Mengambil Data')
+      navigation.popToTop()
+    }
+  }
+
+  const Value = React.useMemo(
     () => ({
 
+      dataList: (ListItem) => {
+        console.log(ListItem)
+      },
+      kirimData: () => {
+        console.log('Hit Kirim')
+      }
     }),
   );
 
   return (
-    <BeratContext.Provider value={datar}>
-      <Tab.Navigator >
-        <Tab.Screen name="ListBarang" >{() => (<ListBarang data_detail={detail_dataPorter} />)}</Tab.Screen>
-        <Tab.Screen name="DetailKendaraan">{() => (<DetailKendaraan data_detail={detail_dataPorter} />)}</Tab.Screen>
-      </Tab.Navigator>
-    </BeratContext.Provider>
+    <PorterContext.Provider value={Value}>
+      {loading? <Loading loading={loading}/>: <Tab.Navigator >
+        <Tab.Screen name="DetailKendaraan">{() => (<DetailKendaraan data_detail={DetailData} />)}</Tab.Screen>
+        <Tab.Screen name="ListBarang" >{() => (<ListBarang data_detail={DetailData} />)}</Tab.Screen>
+      </Tab.Navigator>}
+    </PorterContext.Provider>
   );
 }
 const styles = StyleSheet.create({

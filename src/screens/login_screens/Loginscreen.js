@@ -42,7 +42,7 @@ export function Loginscreen({ navigation }) {
     
     const [loading, setLoading] = useState(false);
     const {Loginfunction} = useContext(AuthContext);
-    const [email, setEmail] = useState("security1");
+    const [email, setEmail] = useState("porter1");
     const [password, setPassword] = useState('1')
     const [required, setRequired] = useState(false)
 

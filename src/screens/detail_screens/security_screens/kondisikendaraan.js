@@ -17,12 +17,13 @@ export function KondisiKendaraan({ data_detail }) {
   const [Note, setNote] = useState()
   const [camera, setCamera] = useState();
   const [ImageMobil, setImageMobil] = useState()
+  const [tmpItem, settmpItem] = useState()
   const [openCamera, setopenCamera] = useState(false);
 
   useEffect(() => {
     // const All_DataKondisi = {isDongkrak, isRodaBan, isBanSerap, NoteDongkrak, NoteRodaBan, NoteBanSerap, ImageMobil}
     // dataKondisi(All_DataKondisi)
-    dataKondisi(KondisiKendaraan, ImageMobil)
+    dataKondisi(KondisiKendaraan)
   }, [KondisiKendaraan, Note, RadioButton, ImageMobil])
 
 
@@ -33,7 +34,8 @@ export function KondisiKendaraan({ data_detail }) {
   async function SetItem() {
     await data_detail.kelengkapan.map(data => {
       data.status = "true";
-      data.note = ""
+      data.note = undefined;
+      data.image = undefined;
     })
     await setKondisiKendaraan(data_detail.kelengkapan)
 
@@ -65,14 +67,24 @@ export function KondisiKendaraan({ data_detail }) {
       </View>
     )
   }
+
+
   
   function showCamera() {
+
     async function takePicture() {
       if (camera) {
         try {
           const options = { quality: 0.5, base64: true };
           const data = await camera.takePictureAsync(options);
-          await setImageMobil('data:image/png;base64,' + data.base64)
+          // await setImageMobil('data:image/png;base64,' + data.base64)          
+         
+          await KondisiKendaraan.map(dataKondisi => {
+
+            if (dataKondisi.code == tmpItem) {
+              dataKondisi.image = ('data:image/png;base64,' + data.base64)    
+            }
+          })
         } catch {
           Alert.alert('Terjadi kesalahan ! Silahkan mengulangi')
         } finally {
@@ -106,7 +118,7 @@ export function KondisiKendaraan({ data_detail }) {
           />
           <View style={{ flex: 0, flexDirection: 'row', justifyContent: 'space-evenly', padding: 5 }}>
             <Button
-              onPress={() => { setopenCamera(false) }}
+              onPress={() => { setopenCamera(false)}}
               title={'Keluar'}
             />
             <Button
@@ -142,7 +154,7 @@ export function KondisiKendaraan({ data_detail }) {
   const Footer = () => {
     return (
       <View style={{paddingBottom:50}}>
-        {showPicture()}
+        {/* {showPicture()}
         <TouchableOpacity
           style={{ backgroundColor: '#1f94c2', margin: 10, padding: 10,  borderRadius: 10, alignSelf: 'center' }}
           onPress={() => { setopenCamera(true) }}>
@@ -150,14 +162,14 @@ export function KondisiKendaraan({ data_detail }) {
             <Icon style={{ marginHorizontal: 8 }} size={30} name='md-camera' type='ionicon' color='white' />
             <Text style={{ marginHorizontal: 8 }}>Ambil Gambar Mobil</Text>
           </View>
-        </TouchableOpacity>
+        </TouchableOpacity> */}
       </View>);
   };
   return (
     <SafeAreaView>
-      <View style={{ }}>
+      <View style={{}}>
         <FlatList
-        style={{padding:20}}
+          style={{ padding: 20 }}
           ListHeaderComponent={Header}
           ListFooterComponent={Footer}
           ListEmptyComponent={listEmptyComponent}
@@ -168,7 +180,7 @@ export function KondisiKendaraan({ data_detail }) {
             <View style={{ padding: 10 }}>
               <View style={{ flexDirection: 'row', alignSelf: 'flex-start', justifyContent: 'space-evenly' }}>
                 <Text style={{ fontSize: 15 }}>{item.nama} </Text>
-                <Text style={{ padding: 2, backgroundColor: '#bcffa3', paddingHorizontal: 8,marginLeft:20 }}> {item.jumlah} </Text>
+                <Text style={{ padding: 2, backgroundColor: '#bcffa3', paddingHorizontal: 8, marginLeft: 20 }}> {item.jumlah} </Text>
               </View>
               <RadioForm
                 style={{ padding: 10 }}
@@ -189,13 +201,33 @@ export function KondisiKendaraan({ data_detail }) {
                   onChangeText={(val) => {
                     item.note = val
                     setNote(val)
-                    
                   }} />
-                <Text style={{ color: 'red' }}>*Harus Masukkan Alasan Jika Tidak Sesuai</Text>
+
+                <TouchableOpacity
+                  style={{ backgroundColor: '#1f94c2', margin: 10, padding: 10, borderRadius: 10, alignSelf: 'center' }}
+                  onPress={async () => {
+                    try {
+                      await settmpItem(item.code)
+                      await showCamera()
+                      await setopenCamera(true)
+                    } catch (error) {
+                      Alert.alert(error)
+                    }
+                  }}>
+                  <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                    <Icon style={{ marginHorizontal: 8 }} size={30} name='md-camera' type='ionicon' color='white' />
+                    <Text style={{ marginHorizontal: 8 }}>Ambil Gambar</Text>
+                  </View>
+                </TouchableOpacity>
+
+
+                {showHide(item)}
+
+
+                <Text style={{ color: 'red', borderBottomWidth: 1, paddingBottom:20 }}>*Harus Masukkan Alasan dan Gambar Jika Tidak Sesuai</Text>
               </View>
             </View>
           )} />
-
 
         {showCamera()}
       </View>
@@ -204,6 +236,18 @@ export function KondisiKendaraan({ data_detail }) {
   );
 }
 
+
+function showHide(item) {
+  if (item.image !== undefined) {
+        return (
+          <View style={{ width: 150, height: 200, flex: 1, borderWidth: 1, borderColor: 'grey', alignSelf: 'center' }}>
+            <Image accessible={false} style={{ flex: 1 }} source={{ uri: item.image }} isVisible={false} />
+          </View>
+        )
+      } else {
+        return null
+      }
+}
 const styles = StyleSheet.create({
 
   InputNote: {

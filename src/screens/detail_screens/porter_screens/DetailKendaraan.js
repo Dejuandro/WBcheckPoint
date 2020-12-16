@@ -1,19 +1,98 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { Text, View, StyleSheet, TextInput, TouchableOpacity, Button, Image, Alert } from 'react-native';
+import { Text, View, StyleSheet, TextInput, TouchableOpacity, Button, Image, Alert,FlatList } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
 import Modal from 'react-native-modal';
 import { RNCamera, FaceDetector } from 'react-native-camera';
 import RadioForm, { RadioButton, RadioButtonInput, RadioButtonLabel } from 'react-native-simple-radio-button';
 import { Icon } from 'react-native-elements'
-import { BeratContext } from '../../../contexts/BeratContext'
+import { PorterContext } from '../../../contexts/PorterContext'
 
 export function DetailKendaraan({ data_detail }) {
+
+  const { kirimData } = useContext(PorterContext)
+  
+  // useEffect(() => {
+  //   kirimData()
+  // },
+  //   []
+  // )
+
+  function listEmpty() {
+    return (
+      <View style={{}}>
+        <Text>Kosong</Text>
+      </View>
+    )
+  }
+
   return (
-    <View>
-      <Text>
-        Detail Kendaraan
-  </Text>
+    <View style={{ flex: 1, padding: 20 }}>
+
+    <View style={{ backgroundColor: 'white', elevation: 10, padding: 10, borderRadius: 10 }}>
+      <View style={{
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        width: '95%',
+        alignSelf: 'flex-start',
+        alignItems: 'center',
+        marginLeft: 15
+      }}>
+        <Text style={{ flexWrap: 'wrap', fontWeight: 'bold', fontSize: 20 }} numberOfLines={1}>{data_detail.Data.No_Plat}</Text>
+        <Text style={{ flexWrap: 'wrap', fontWeight: 'bold', fontSize: 15 }}>{data_detail.Data.id_transaksi}</Text>
+      </View>
+
+
+      <View style={{ alignItems: 'center', alignSelf: 'flex-start', marginVertical: 4, marginLeft: 15 }}>
+        <Text>{data_detail.Data.tanggal}  {data_detail.Data.pukul}</Text>
+      </View>
+
+      <View style={{ alignItems: 'center', alignSelf: 'flex-start', alignItems: 'flex-start', marginLeft: 15 }}>
+        <Text style={{ fontSize: 16 }}>Kendaraan : {data_detail.Data.kendaraan}</Text>
+        <Text style={{ fontSize: 16 }}>Vendor : {data_detail.Data.vendor}</Text>
+        <Text style={{ fontSize: 16 }}>Supir : {data_detail.Data.nama_supir}</Text>
+      </View>
     </View>
+
+    <View style={{ backgroundColor: 'white', elevation: 10, padding: 10, borderRadius: 10, marginTop: 15, }}>
+      <FlatList
+        style={{ marginLeft: 15 }}
+        ListEmptyComponent={listEmpty()}
+        ListHeaderComponent={<Text style={{ fontWeight: 'bold', fontSize: 20 }}>List Dock Transaksi</Text>}
+        showsVerticalScrollIndicator={false}
+        data={data_detail.Data.DockList}
+        keyExtractor={({ DockCode }, index) => DockCode}
+        renderItem={({ item }) => (
+
+          <View style={{ flexDirection: 'row', paddingHorizontal: 10, padding: 5, alignItems: 'center', alignSelf: 'flex-start', justifyContent: 'space-between', width: '100%' }}>
+            <Text style={{ fontWeight: 'bold' }}>{item.DockCode}</Text>
+            {item.DockStatus ?
+              <Text>Proses</Text> :
+              <Text>Selesai</Text>}
+            {item.DockStatus ?
+              <Icon
+                size={20}
+                name='md-logo-flickr'
+                type='ionicon'
+                color='#1f94c2'
+                onPress={() => { setimageView(false) }}
+              />
+              : <Icon
+                size={20}
+                name='md-checkmark-circle'
+                type='ionicon'
+                color='green'
+                onPress={() => { setimageView(false) }}
+              />}
+          </View>
+        )} />
+    </View>
+    <View style={{ marginTop: 25 }} >
+      <Button title={'Submit'} onPress={()=>{kirimData()}} />
+      <Text style={{ color: 'red', marginTop: 10 }}>*Pastikan semua data terisi dengan benar</Text>
+    </View>
+  </View>
+
+
   )
 }
 
@@ -28,3 +107,9 @@ const styles = StyleSheet.create({
   }
 
 })
+
+// [{"DockCode": "DOCK001", "DockName": "-", "DockStatus": "true"}, 
+// {"DockCode": "DOCK002", "DockName": "-", "DockStatus": "true"}]
+
+
+// { "Data": { "DockList": [[Object], [Object]], "Item": [[Object], [Object], [Object], [Object]], "No_Plat": "B 1 SA", "id_transaksi": "REG07122020104122", "nama_supir": "KARSONO", "pukul": "17:00", "status": "Dock", "tanggal": "12/9/20, 5:00 PM", "vendor": "PT ABC TRANSPORT" }, "dockCode": "DOCK001", "message": "Success", "status": "200" }

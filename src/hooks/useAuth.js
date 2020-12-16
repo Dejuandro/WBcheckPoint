@@ -64,6 +64,12 @@ export function useAuth() {
             const user_role = json.user_role
             const user_name = json.user_name
             console.log(token + user_role + user_name)
+            //Erase Everything
+            await SecureStorage.removeItem('token');
+            await SecureStorage.removeItem('user_name');
+            await SecureStorage.removeItem('user_role');
+            await SecureStorage.removeItem('TimbanganCode');
+
             await SecureStorage.setItem('token', JSON.stringify(token));
             await SecureStorage.setItem('user_role', JSON.stringify(user_role));
             await SecureStorage.setItem('user_name', JSON.stringify(user_name));
@@ -73,9 +79,10 @@ export function useAuth() {
 
       },
       logout: async () => {
-        await SecureStorage.removeItem('user');
+        await SecureStorage.removeItem('token');
         await SecureStorage.removeItem('user_name');
         await SecureStorage.removeItem('user_role');
+        await SecureStorage.removeItem('TimbanganCode');
         dispatch(createAction('REMOVE_TOKEN'));
       },
       register: async (email, password) => {

@@ -1,5 +1,5 @@
 import React, { useState, useContext, useEffect, Component } from 'react';
-import { View, StyleSheet, Text, FlatList, TouchableWithoutFeedback,TouchableOpacity, Dimensions, Alert, Linking, Button } from 'react-native';
+import { View, StyleSheet, Text, FlatList, TouchableWithoutFeedback, TouchableOpacity, Dimensions, Alert, Linking, Button, RefreshControl } from 'react-native';
 import SecureStorage from 'react-native-secure-storage';
 import { BASE_URL } from '../../config/index';
 import { AuthContext } from '../../contexts/AuthContext';
@@ -14,7 +14,7 @@ export function HomeScreen({ navigation }) {
 
 
   const [loading, setLoading] = useState(true);
-  const [token, setToken] = useState()
+  const [isRefreshing, setisRefreshing] = useState(false)
   const [fullName, setfullName] = useState()
   const [userName, setuserName] = useState()
   const [userRole, setuserRole] = useState()
@@ -29,70 +29,52 @@ export function HomeScreen({ navigation }) {
   const [SecurityWeighBridge, setSecurityWeighBridge] = useState()
   const [SecurityWeighBridgeCode, setSecurityWeighBridgeCode] = useState()
   const [ListWeighBridge, setListWeighBridge] = useState()
-  const [ModalPilihan, setModalPilihan] = useState(true)
+  const [ModalPilihan, setModalPilihan] = useState(false)
 
- 
+  const wb = SecurityWeighBridgeCode
 
-  useEffect(() => {
-    const unsubscribe = navigation.addListener('focus', () => {
-      HomePageRefresh();
-    });
+  // useEffect(() => {
+  //   const unsubscribe = navigation.addListener('focus', () => {
+  //     console.log(wb)
+  //     HomePageRefresh();
+  //   });
 
-    return unsubscribe;
-  }, [navigation]);
+  //   return unsubscribe;
+  // }, [navigation]);
 
   useEffect(() => {
     firstLoad()
   }, [])
 
-  function HomePageRefresh() {
-    console.log(SecurityWeighBridgeCode, userName)
+  function HomePageRefresh(TimbanganCode, name) {
     try {
-      if (SecurityWeighBridgeCode !== undefined || userName !== undefined) {
-        setLoading(true)
-        // HIT API GET DAFTAR KENDARAAN SECURITY DISINI
-        fetch(`${BASE_URL}cpapi/v1/Transaction/WB_GetListVehicle/${SecurityWeighBridgeCode}/${userName}`, {
-          method: 'Get',
-          headers: {
-            Accept: 'application/json',
-            'Content-Type': 'application/json'
+      // HIT API GET DAFTAR KENDARAAN SECURITY DISINI
+      fetch(`${BASE_URL}cpapi/v1/Transaction/WB_GetListVehicle/${TimbanganCode}/${name}`, {
+        method: 'Get',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json'
+        }
+      })
+        .then((res) => {
+          console.log(res.status)
+          if (res.status !== 200) {
+            Alert.alert('Gagal Mengambil Daftar Timbangan')
+          } else {
+            return res.json()
           }
         })
-          .then((res) => {
-            console.log(res.status)
-            if (res.status !== 200) {
-              Alert.alert('Gagal Mengambil Daftar Timbangan')
-            } else {
-              return res.json()
-            }
-          })
-          .then((json) => {
-            console.log(json)
-            setDataSecurity(json.Data)
-            setLoading(false)
-          })
-      }
-
+        .then((json) => {
+          setDataSecurity(json.Data)
+          setLoading(false)
+        })
     } catch {
       Alert.alert('Error Pilih Timbangan')
-    } finally {
-      setLoading(false)
     }
   }
 
-  // useEffect(()=>{
-  //   const unsubscribe = navigation.addListener('focus', () => {
-  //     OnClickPilihTimbangan(SecurityWeighBridge,SecurityWeighBridgeCode)
-  //   });
-
-  //   return unsubscribe;
-  // },[navigation])
-
-
   async function firstLoad() {
-    console.log('Hit FirstLoad')
     try {
-      await setLoading(false)
       await setLoading(true)
       const name = await SecureStorage.getItem('token')
       await setuserName(JSON.parse(name))
@@ -101,15 +83,23 @@ export function HomeScreen({ navigation }) {
       const role = await SecureStorage.getItem('user_role')
       await setuserRole(JSON.parse(role))
       const Porter = JSON.stringify("Porter")
-      if (role == Porter) {
-        console.log('You Are Porter')
-        await setIsPorter(true)
-        await getDockList(JSON.parse(name), JSON.parse(role))
+      const TimbanganCode = await SecureStorage.getItem('TimbanganCode')
+      if (TimbanganCode !== null) {
+        console.log('Refresh Home Page')
+        // await setisRefreshing(true)
+        HomePageRefresh(JSON.parse(TimbanganCode), JSON.parse(name))
       } else {
-        console.log('You Are Security')
-        await getWeighBridgeList(JSON.parse(name), JSON.parse(role))
+        console.log('Hit FirstLoad')
+        if (role == Porter) {
+          console.log('You Are Porter')
+          await setIsPorter(true)
+          await getDockList(JSON.parse(name), JSON.parse(role))
+        } else {
+          console.log('You Are Security')
+          await getWeighBridgeList(JSON.parse(name), JSON.parse(role))
+        }
+        await setLoading(false)
       }
-      await setLoading(false)
     } catch {
       Alert.alert('Error')
     }
@@ -132,6 +122,7 @@ export function HomeScreen({ navigation }) {
       })
       .then((json) => {
         // console.log(json)
+        setModalPilihan(true)
         setListWeighBridge(json.Data)
         setLoading(false)
       })
@@ -153,7 +144,7 @@ export function HomeScreen({ navigation }) {
         }
       })
       .then((json) => {
-        // console.log(json)
+        setModalPilihan(true)
         setListDock(json.Data)
         setLoading(false)
       })
@@ -291,14 +282,17 @@ export function HomeScreen({ navigation }) {
     async function onSuccess(e) {
       try {
         await setLoading(true)
-        await setisVisibleScan(false)
-        await navigation.navigate('SecurityDetailScreen', {
-          ID_Number: e.data,
-
-        })
+        {
+          navigation.navigate('SecurityDetailScreen', {
+            ID_Number: e.data,
+            UserName: userName,
+            wbcode: SecurityWeighBridgeCode
+          })
+        }
       } catch {
         Alert.alert('Error')
       } finally {
+        await setisVisibleScan(false)
         await setLoading(false)
       }
     };
@@ -330,10 +324,10 @@ export function HomeScreen({ navigation }) {
           return "#fffb26"
         }
       } else {
-        if (status == "security1") {
+        if (status == "WB_IN") {
           return "#26d7ff"
         } else {
-          return "#36ff8a"
+          return "#31e000"
         }
       }
     }
@@ -345,7 +339,7 @@ export function HomeScreen({ navigation }) {
           flex: 1,
           flexDirection: 'row',
           justifyContent: 'space-between',
-          alignItems:'center'
+          alignItems: 'center'
         }}>
           <Text style={{ flexWrap: 'wrap', fontWeight: 'bold', fontSize: 20 }} numberOfLines={1}>{item.no_plat}</Text>
           <Text style={{ flexWrap: 'wrap', fontWeight: 'bold', fontSize: 13 }}>{item.id_transaksi}</Text>
@@ -407,7 +401,7 @@ export function HomeScreen({ navigation }) {
 
 
   async function OnClickPilihTimbangan(NamaTimbangan, TimbanganCode) {
-    if(TimbanganCode !== undefined || NamaTimbangan !== undefined){
+    if (TimbanganCode !== undefined || NamaTimbangan !== undefined) {
       try {
         // HIT API GET DAFTAR KENDARAAN SECURITY DISINI
         await fetch(`${BASE_URL}cpapi/v1/Transaction/WB_GetListVehicle/${TimbanganCode}/${userName}`, {
@@ -429,10 +423,11 @@ export function HomeScreen({ navigation }) {
             setDataSecurity(json.Data)
             setLoading(false)
           })
-  
+
         // await setDataSecurity(vehicle_list_security)
         await setSecurityWeighBridge(NamaTimbangan)
         await setSecurityWeighBridgeCode(TimbanganCode)
+        await SecureStorage.setItem('TimbanganCode', JSON.stringify(TimbanganCode))
       } catch {
         Alert.alert('Error Pilih Timbangan')
       } finally {
@@ -450,6 +445,8 @@ export function HomeScreen({ navigation }) {
           <FlatList
             showsVerticalScrollIndicator={false}
             ListEmptyComponent={emptyWBDOCKList}
+            refreshControl={<RefreshControl refreshing={isRefreshing}
+              onRefresh={() => { firstLoad() }} />}
             data={ListWeighBridge}
             keyExtractor={({ timbanganCode }, index) => timbanganCode}
             renderItem={({ item }) => (
@@ -477,17 +474,31 @@ export function HomeScreen({ navigation }) {
   function SecurityScreen() {
     return (
       <AuthContainer  >
-        {SecurityWeighBridgeCode ? <View/>: PilihWeighBridge()}
+        {SecurityWeighBridgeCode ? <View /> : PilihWeighBridge()}
         <View style={styles.header} >
           <Text style={{ color: 'black', fontSize: 16 }}>{fullName} </Text>
-          <Text style={{ flexWrap: 'wrap', color: 'black', fontSize: 16, }} onPress={async () => {
-            try {
-              await setLoading(true)
-              await logout()
-            } catch {
-              console.log('error')
-            }
-          }}>Role : {userRole}</Text>
+         <View style={{alignItems:'center'}}>
+         <Text style={{ flexWrap: 'wrap', color: 'black', fontSize: 15 }} >Role</Text>
+         <Text style={{ color: 'black', fontSize: 23, fontWeight: 'bold', marginTop:-5 }}>{userRole}</Text>
+         </View>
+          <TouchableOpacity
+            onPress={async () => {
+              try {
+                await setLoading(true)
+                await logout()
+              } catch {
+                console.log('error')
+              }
+            }}>
+            <Icon
+              size={20}
+              name='log-out'
+              title="Keluar"
+              type='ionicon'
+              color='black'
+            />
+            <Text style={{ fontSize: 15 }}>Keluar</Text>
+          </TouchableOpacity>
         </View>
         <Text style={{ alignSelf: 'flex-start', fontSize: 25, fontWeight: 'bold', marginTop: 10 }}>Daftar Kendaraan Security</Text>
         <View style={{ flexDirection: 'row', alignSelf: 'flex-start', alignItems: 'flex-start' }}>
@@ -498,6 +509,7 @@ export function HomeScreen({ navigation }) {
                 try {
                   await setLoading(true)
                   await setSecurityWeighBridgeCode(null)
+                  await SecureStorage.removeItem('TimbanganCode');
                   await firstLoad()
                   await setModalPilihan(true)
                 } catch {
@@ -512,15 +524,29 @@ export function HomeScreen({ navigation }) {
           style={{ alignSelf: 'center' }}
           ListEmptyComponent={emptyVehicleList}
           data={dataSecurity}
+          refreshing={isRefreshing}
+          onRefresh={() => { firstLoad() }}
           keyExtractor={({ id_transaksi }, index) => id_transaksi}
           renderItem={({ item }) => (
             <View>
               <TouchableWithoutFeedback
                 onPress={() => {
+                  var date = new Date().getDate(); //To get the Current Date
+                  var month = new Date().getMonth() + 1; //To get the Current Month
+                  var year = new Date().getFullYear(); //To get the Current Year
+                  var hours = new Date().getHours(); //To get the Current Hours
+                  var min = new Date().getMinutes(); //To get the Current Minutes
+                  var sec = new Date().getSeconds(); 
+                  const currentDate = (
+                    date + '/' + month + '/' + year 
+                    + ' ' + hours + ':' + min + ':' + sec
+                  );
+
                   navigation.navigate('SecurityDetailScreen', {
                     ID_Number: item.id_transaksi,
-                    UserName : userName,
-                    wbcode : SecurityWeighBridgeCode
+                    UserName: userName,
+                    wbcode: SecurityWeighBridgeCode,
+                    checkIn : currentDate
                   })
                 }}
               >
@@ -601,50 +627,65 @@ export function HomeScreen({ navigation }) {
 
 
   function pilihdock() {
-      return (
-        <Modal isVisible={ModalPilihan}>
-          <View style={{ backgroundColor: 'white', borderRadius: 10, padding: 10 }}>
-            <Text style={{ fontSize: 20, fontWeight: 'bold' }}>Pilih Lokasi Dock</Text>
-            <FlatList
-              showsVerticalScrollIndicator={false}
-              ListEmptyComponent={emptyWBDOCKList}
-              data={ListDock}
-              keyExtractor={({ DockCode }, index) => DockCode}
-              renderItem={({ item }) => (
-                <View style={{ padding: 10 }}>
-                  <Button
-                    onPress={async () => {
-                      try {
-                        await setLoading(true)
-                        await OnClickPilihdock(item.DockCode)
-                      } catch {
-                        Alert.alert('Error')
-                      }
-                    }}
-                    title={'Dock' + ' ' + item.DockCode} />
-                </View>
-              )} />
-          </View>
-          <Loading loading={loading} />
-        </Modal>
-      )
+    return (
+      <Modal isVisible={ModalPilihan}>
+        <View style={{ backgroundColor: 'white', borderRadius: 10, padding: 10 }}>
+          <Text style={{ fontSize: 20, fontWeight: 'bold' }}>Pilih Lokasi Dock</Text>
+          <FlatList
+            showsVerticalScrollIndicator={false}
+            ListEmptyComponent={emptyWBDOCKList}
+            data={ListDock}
+            keyExtractor={({ DockCode }, index) => DockCode}
+            renderItem={({ item }) => (
+              <View style={{ padding: 10 }}>
+                <Button
+                  onPress={async () => {
+                    try {
+                      await setLoading(true)
+                      await setModalPilihan(false)
+                      await OnClickPilihdock(item.DockCode)
+                    } catch {
+                      Alert.alert('Error')
+                    }
+                  }}
+                  title={'Dock' + ' ' + item.DockCode} />
+              </View>
+            )} />
+        </View>
+        <Loading loading={loading} />
+      </Modal>
+    )
   }
 
 
   function PorterScreen() {
     return (
       <AuthContainer>
-        {Porterdock ? <View/>: pilihdock()}
-        <View style={styles.header}>
+        {Porterdock ? <View /> : pilihdock()}
+        <View style={styles.header} >
           <Text style={{ color: 'black', fontSize: 16 }}>{fullName} </Text>
-          <Text style={{ flexWrap: 'wrap', color: 'black', fontSize: 16, }} onPress={async () => {
-            try {
-              await setLoading(true)
-              await logout()
-            } catch {
-              console.log('error')
-            }
-          }}>Role : {userRole}</Text>
+         <View style={{alignItems:'center'}}>
+         <Text style={{ flexWrap: 'wrap', color: 'black', fontSize: 15 }} >Role</Text>
+         <Text style={{ color: 'black', fontSize: 23, fontWeight: 'bold', marginTop:-5 }}>{userRole}</Text>
+         </View>
+          <TouchableOpacity
+            onPress={async () => {
+              try {
+                await setLoading(true)
+                await logout()
+              } catch {
+                console.log('error')
+              }
+            }}>
+            <Icon
+              size={20}
+              name='log-out'
+              title="Keluar"
+              type='ionicon'
+              color='black'
+            />
+            <Text style={{ fontSize: 15 }}>Keluar</Text>
+          </TouchableOpacity>
         </View>
         <Text style={{ alignSelf: 'flex-start', fontSize: 25, fontWeight: 'bold', marginTop: 10 }}>Daftar Kendaraan Porter</Text>
         <View style={{ flexDirection: 'row', alignSelf: 'flex-start', alignItems: 'flex-end', alignContent: 'center' }}>
@@ -669,13 +710,15 @@ export function HomeScreen({ navigation }) {
           style={{ alignSelf: 'center' }}
           ListEmptyComponent={emptyVehicleList}
           data={dataPorter}
-          keyExtractor={({ no_plat }, index) => no_plat}
+          keyExtractor={({ id_transaksi }, index) => id_transaksi}
           renderItem={({ item }) => (
             <View>
               <TouchableWithoutFeedback
                 onPress={() => {
                   navigation.navigate('PorterDetailScreen', {
-                    ID_Number: item.ID_DOC,
+                    id_transaksi: item.id_transaksi,
+                    username: userName,
+                    dockCode: Porterdock
                   })
                 }}
               >
@@ -686,7 +729,7 @@ export function HomeScreen({ navigation }) {
 
         {scanQrCode()}
 
-       
+
         <View style={{ alignSelf: 'flex-start' }}>
           <View style={{ backgroundColor: '#1f94c2', position: 'absolute', width: 60, height: 60, alignItems: 'center', justifyContent: 'center', bottom: '1%', borderRadius: 50, elevation: 5 }}>
             <TouchableWithoutFeedback

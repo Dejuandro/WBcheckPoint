@@ -27,7 +27,7 @@ export function SecurityDetailScreen({ route,navigation }) {
   }, [])
 
   async function getDataDetails() {
-    await fetch(`${BASE_URL}cpapi/v1/Transaction/GetVehicleDetails/${route.params.ID_Number}/${route.params.UserName}/${route.params.wbcode}`, {
+    await fetch(`${BASE_URL}cpapi/v1/Transaction/WB_GetVehicleDetails/${route.params.ID_Number}/${route.params.UserName}/${route.params.wbcode}`, {
       method: 'Get',
       headers: {
         Accept: 'application/json',
@@ -41,6 +41,7 @@ export function SecurityDetailScreen({ route,navigation }) {
           navigation.popToTop()
         } else {
           if (res.status !== 200) {
+            console.log(res)
             Alert.alert('Gagal Mengambil Daftar Timbangan')
             navigation.popToTop()
           } else {
@@ -80,7 +81,7 @@ export function SecurityDetailScreen({ route,navigation }) {
      }
   }
 
-  const datar = React.useMemo(
+  const Value = React.useMemo(
     () => ({
       databerat: (Berat, NoteBerat, Photo) => {
         const All_BeratData = {
@@ -90,43 +91,45 @@ export function SecurityDetailScreen({ route,navigation }) {
         }
         setDataBeratKendaraan(All_BeratData)
       },
-      dataKondisi: (All_KondisiData, ImageMobil) => {
+      dataKondisi: (All_KondisiData) => {
         setDataKondisiKendaraan({
-          "kelengkapan": All_KondisiData,
-          "GambarMobil": ImageMobil
+          "kelengkapan": All_KondisiData
         })
       },
       kirimData: async () => {
         setLoading(true)
         
-        navigation.push('Homescreen')
-        // if (DataBeratKendaraan.Berat == null || DataBeratKendaraan.NoteBerat == null || DataBeratKendaraan.GambarBeratMobil == null) {
-        //   Alert.alert('Semua Data Berat Kendaraan Harus Di isi')
-        // } else {
-        //   try {
-        //     var tmp = []
-        //    const data = await DataKondisiKendaraan.kelengkapan.map( (DataLooping) => {
-        //     // console.log(DataLooping)
+        if (DataBeratKendaraan.Berat == null || DataBeratKendaraan.NoteBerat == null || DataBeratKendaraan.GambarBeratMobil == null) {
+          Alert.alert('Semua Data Berat Kendaraan Harus Di isi')
+        } else {
+          try {
+            var tmp = []
+           const data = await DataKondisiKendaraan.kelengkapan.map( (DataLooping) => {
+            // console.log(DataLooping)
 
-        //     if (DataLooping.note == "" && DataLooping.status == false) {
-        //       Alert.alert('Note ' + DataLooping.nama + ' harus diisi')
-        //       tmp = [null]
-        //     } else {
-        //       if (DataKondisiKendaraan.GambarMobil == null) {
-        //         Alert.alert('Foto Kondisi harus diisi')
-        //         tmp = [null]
-        //       } else {
-        //         const stat = {'status' : true}
-        //         return  true
-        //       }
-        //     }
-        //   })
-        //     await kirimData(data)
-        //   } catch {
-        //     Alert.alert('Error Kirim Data, Coba Lagi')
-        //   }
+            if (DataLooping.note == undefined && DataLooping.status == false) {
+              Alert.alert('Note ' + DataLooping.nama + ' Harus Diisi')
+              tmp = [null]
+              setLoading(false)
+            } else {
+              console.log(DataLooping.status)
+              if (DataLooping.image == undefined && DataLooping.status !== false) {
+                Alert.alert('Gambar ' + DataLooping.nama + ' Harus Diambil')
+                tmp = [null]
+                setLoading(false)
+              } else {
+                setLoading(false)
+                const stat = {'status' : true}
+                return  true
+              }
+            }
+          })
+            await kirimData(data)
+          } catch {
+            Alert.alert('Error Kirim Data, Coba Lagi')
+          }
 
-        // }
+        }
       }
     }),
   );
@@ -137,16 +140,28 @@ export function SecurityDetailScreen({ route,navigation }) {
       return n == true;
     }
     try {
+      var date = new Date().getDate(); //To get the Current Date
+      var month = new Date().getMonth() + 1; //To get the Current Month
+      var year = new Date().getFullYear(); //To get the Current Year
+      var hours = new Date().getHours(); //To get the Current Hours
+      var min = new Date().getMinutes(); //To get the Current Minutes
+      var sec = new Date().getSeconds();
+
+      const currentDate = (
+        date + '/' + month + '/' + year
+        + ' ' + hours + ':' + min + ':' + sec
+      );
       const isValid = await tmp.every(isTrue)
       if (isValid == true) {
         const PostData = {
           "id_transaksi": DetailData.id_transaksi,
           "username": route.params.UserName,
+          "checkIn": route.params.checkIn,
+          "checkOut": currentDate,
           "DataBerat": DataBeratKendaraan,
-          "DataKondisi": DataKondisiKendaraan
+          "DataKondisi": DataKondisiKendaraan.kelengkapan
         }
-
-        await fetch(`${BASE_URL}cpapi/v1/Transaction/SEC_WB_PostData`, {
+        await fetch(`${BASE_URL}cpapi/v1/Transaction/WB_PostData`, {
           method: 'Post',
           headers: {
             Accept: 'application/json',
@@ -163,13 +178,14 @@ export function SecurityDetailScreen({ route,navigation }) {
             }
           })
           .then((json) => {
+            Alert.alert('Sukses Mengirim Data Transaksi '+ PostData.id_transaksi)
             console.log(json)
-            navigation.popToTop()
+            navigation.push('Homescreen')
 
           })
       }
     } catch {
-
+      Alert.alert('Gagal Menyimpan Data, Ulangi Lagi !')
    }
    
     // console.log(tmp)
@@ -179,7 +195,7 @@ export function SecurityDetailScreen({ route,navigation }) {
 
 
   return (
-    <BeratContext.Provider value={datar}>
+    <BeratContext.Provider value={Value}>
       {loading ? <Loading loading={loading} /> : <Tab.Navigator >
         <Tab.Screen name="BeratKendaraan" >{() => (<BeratKendaraan data_detail={DetailData} />)}</Tab.Screen>
         <Tab.Screen name="KondisiKendaraan">{() => (<KondisiKendaraan data_detail={DetailData} />)}</Tab.Screen>

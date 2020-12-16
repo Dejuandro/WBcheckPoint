@@ -1,5 +1,5 @@
 import React, { useState, useContext, createContext, useEffect } from 'react';
-import { Text, View, StyleSheet, Dimensions, TextInput, TouchableOpacity, Button, Image, ScrollView, Alert } from 'react-native';
+import { Text, View, StyleSheet, Dimensions, TextInput, TouchableOpacity, Button, Image, ScrollView, Alert,SafeAreaView } from 'react-native';
 import { RNCamera, FaceDetector } from 'react-native-camera';
 import { BeratContext } from '../../../contexts/BeratContext'
 import Modal from 'react-native-modal';
@@ -87,7 +87,8 @@ function BeratKendaraan({ data_detail, navigation }) {
     )
   }
 
-  return (
+  return (<SafeAreaView>
+    
     <ScrollView
       showsVerticalScrollIndicator={false}>
       <View style={{ flex: 1, alignItems: 'center', padding: 20 }}>
@@ -99,7 +100,7 @@ function BeratKendaraan({ data_detail, navigation }) {
           alignSelf: 'flex-start',
           alignItems:'center'
         }}>
-          <Text style={{ flexWrap: 'wrap', fontWeight: 'bold', fontSize: 20 }} numberOfLines={1}>No. Plat : {data_detail.No_Plat}</Text>
+          <Text style={{ flexWrap: 'wrap', fontWeight: 'bold', fontSize: 20 }} numberOfLines={1}>{data_detail.No_Plat}</Text>
           <Text style={{ flexWrap: 'wrap', fontWeight: 'bold', fontSize: 15 }}>{data_detail.id_transaksi}</Text>
         </View>
 
@@ -162,6 +163,7 @@ function BeratKendaraan({ data_detail, navigation }) {
         </TouchableOpacity>
       </View>
     </ScrollView>
+  </SafeAreaView>
   );
 }
 
