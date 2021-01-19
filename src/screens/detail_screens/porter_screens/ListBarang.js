@@ -10,18 +10,15 @@ import { TouchableWithoutFeedback } from 'react-native-gesture-handler';
 
 export function ListBarang({ data_detail, navigation }) {
 
-  const [isColapse, setisColapse] = useState(false)
   const { dataList } = useContext(PorterContext)
   const [openCamera, setopenCamera] = useState(false);
   const [camera, setCamera] = useState();
   const [DataItem, setDataItem] = useState()
   const [ImageTmp, setImageTmp] = useState();
   const [RadioButton, setRadioButton]= useState()
-  const [SelectedValue, setSelectedValue] = useState(data_detail.itemStatus)
   const [Note, setNote] = useState()
   const [imageView, setimageView] = useState(false)
   const [tmpItemCode, settmpItemCode] = useState()
-  const [itemSelected, setitemSelected] = useState('next_dock')
   const [loading, setLoading] = useState(true)
 
   var radio_props = [
@@ -38,16 +35,17 @@ export function ListBarang({ data_detail, navigation }) {
 
   useEffect(() => {
     dataList(DataItem)
-  }, [DataItem,RadioButton,ImageTmp,Note])
+  }, [DataItem, RadioButton, ImageTmp, Note])
 
 
 
   async function SetItem() {
     data_detail.Data.Item.map(dataLooping => {
       dataLooping.image = ""
+      dataLooping.note = ""
     })
-
-    setDataItem(data_detail.Data.Item)
+    await setDataItem(data_detail.Data.Item)
+    await setLoading(false)
     // console.log(DataItem)
     if (DataItem !== undefined) {
       setLoading(false)
@@ -84,6 +82,7 @@ export function ListBarang({ data_detail, navigation }) {
         } catch {
           Alert.alert('Terjadi kesalahan ! Silahkan mengulangi')
         } finally {
+          await setimageView(true)
           await setopenCamera(false)
         }
       }
@@ -104,16 +103,20 @@ export function ListBarang({ data_detail, navigation }) {
               buttonPositive: 'Ok',
               buttonNegative: 'Cancel',
             }}
-            androidRecordAudioPermissionOptions={{
-              title: 'Permission to use audio recording',
-              message: 'We need your permission to use your audio',
-              buttonPositive: 'Ok',
-              buttonNegative: 'Cancel',
-            }}
+            // androidRecordAudioPermissionOptions={{
+            //   title: 'Permission to use audio recording',
+            //   message: 'We need your permission to use your audio',
+            //   buttonPositive: 'Ok',
+            //   buttonNegative: 'Cancel',
+            // }}
           />
           <View style={{ flex: 0, flexDirection: 'row', justifyContent: 'space-evenly', padding: 5 }}>
             <Button
-              onPress={() => { setopenCamera(false)}}
+              onPress={() => {
+
+                setimageView(true)
+                setopenCamera(false)
+              }}
               title={'Keluar'}
             />
             <Button
@@ -142,8 +145,8 @@ export function ListBarang({ data_detail, navigation }) {
     const DataRt = DataItem.map(DataItemLoop => {
       if (DataItemLoop.itemCode == tmpItemCode) {
         return (
-          <Modal isVisible={imageView}>
-            <View style={{ flex: 1, backgroundColor: 'white', padding: 20, borderRadius: 10, alignItems: 'center', paddingTop: 50 }}>
+          <Modal key={DataItemLoop.itemCode} isVisible={imageView}>
+            <View  style={{ flex: 1, backgroundColor: 'white', padding: 20, borderRadius: 10, alignItems: 'center', paddingTop: 50 }}>
               <View style={{ position: 'absolute', alignSelf: 'flex-end', zIndex: 999, flex: 1 }}>
                 <Icon
                   size={50}
@@ -157,13 +160,13 @@ export function ListBarang({ data_detail, navigation }) {
               <View style={{ marginTop: 20 }}>
                 <Button title={'Ambil Gambar'} onPress={() => {
                   try {
+                    setimageView(false)
                     setopenCamera(true)
                   } catch {
                     Alert.alert('Error Membuka Kamera')
                   }
                 }} />
               </View>
-              {showCamera()}
             </View>
           </Modal>
         )
@@ -233,6 +236,7 @@ export function ListBarang({ data_detail, navigation }) {
             }}
           />
           <View style={{ borderBottomWidth: 1, marginTop: 20 }} />
+          {ImageModal()}
 
         </View>
       )
@@ -240,11 +244,11 @@ export function ListBarang({ data_detail, navigation }) {
 
   }
   return (
-       <View style={{ padding: 20, flex: 1 }}>
-      {loading ? <Loading loading={loading} /> : <View style={{ backgroundColor: 'white', elevation: 9, borderRadius: 10, paddingHorizontal: 20, }}>
+    <View style={{ padding: 20, flex: 1 }}>
+    {loading ? <Loading loading={loading} /> : <View style={{ backgroundColor: 'white', elevation: 9, borderRadius: 10, paddingHorizontal: 20, }}>
 
-        <FlatList
-        scrollEnabled={false}
+      <FlatList
+          // scrollEnabled={false}
           ListEmptyComponent={listEmpty()}
           ListHeaderComponent={<Text style={{ fontSize: 25, fontWeight: 'bold', marginTop: 20 }}>{data_detail.dockCode}</Text>}
           showsVerticalScrollIndicator={false}
@@ -253,6 +257,8 @@ export function ListBarang({ data_detail, navigation }) {
           renderItem={({ item }) => (
             listBarang(item)
           )} />
+
+        {showCamera()}
         {ImageModal()}
       </View>}
     </View>

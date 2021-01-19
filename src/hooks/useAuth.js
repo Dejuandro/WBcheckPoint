@@ -1,10 +1,10 @@
 import React from 'react';
 import axios from 'axios';
-import SecureStorage from 'react-native-secure-storage';
-import { BASE_URL } from '../config/index';
+import SecureStorage from '@react-native-community/async-storage';
+// import { BASE_URL } from '../config/index';
 import { createAction } from '../utils/createAction';
 import { sleep } from '../utils/sleep';
-import { Alert, Text, View } from 'react-native'
+import { Alert, Text, View  } from 'react-native'
 
 export function useAuth() {
   const [state, dispatch] = React.useReducer(
@@ -39,6 +39,8 @@ export function useAuth() {
   const auth = React.useMemo(
     () => ({
       Loginfunction: async (email, password) => {
+        const IpLocal = await SecureStorage.getItem('localhost')
+        const BASE_URL = JSON.parse(IpLocal)
         await fetch(`${BASE_URL}authenticationservice/v1/resource/Authentication`, {
           method: 'POST',
           headers: {
@@ -63,16 +65,20 @@ export function useAuth() {
             const token = email
             const user_role = json.user_role
             const user_name = json.user_name
-            console.log(token + user_role + user_name)
+            console.log({'username':token ,'Role': user_role,'fullName': user_name})
             //Erase Everything
             await SecureStorage.removeItem('token');
             await SecureStorage.removeItem('user_name');
             await SecureStorage.removeItem('user_role');
             await SecureStorage.removeItem('TimbanganCode');
+            await SecureStorage.removeItem('NamaTimbanganCode');
+            await SecureStorage.removeItem('dockCode');
 
             await SecureStorage.setItem('token', JSON.stringify(token));
             await SecureStorage.setItem('user_role', JSON.stringify(user_role));
             await SecureStorage.setItem('user_name', JSON.stringify(user_name));
+
+            
 
             dispatch(createAction('SET_TOKEN', token));
           })
@@ -83,6 +89,8 @@ export function useAuth() {
         await SecureStorage.removeItem('user_name');
         await SecureStorage.removeItem('user_role');
         await SecureStorage.removeItem('TimbanganCode');
+        await SecureStorage.removeItem('NamaTimbanganCode');
+        await SecureStorage.removeItem('dockCode');
         dispatch(createAction('REMOVE_TOKEN'));
       },
       register: async (email, password) => {

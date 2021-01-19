@@ -9,28 +9,29 @@ const MainStack = createStackNavigator();
 export function MainStackNavigator() {
   return (
     <MainStack.Navigator
+    mode={'modal'}
     screenOptions={{
-        headerShown: false
+        headerShown: true
     }}>
       <MainStack.Screen
         name={'Homescreen'}
         component={HomeScreen}
         options={{
-          title: 'Home Screen',
+          title: 'Home Screen',headerShown: false
         }}
       />  
     <MainStack.Screen
     name={'SecurityDetailScreen'}
     component={SecurityDetailScreen}
     options={{
-      title: 'Detail Screen',
+      title: 'Halaman Detail',
     }}
   />
   <MainStack.Screen
     name={'PorterDetailScreen'}
     component={PorterDetailScreen}
     options={{
-      title: 'Detail Screen',
+      title: 'Halaman Detail',
     }}
   />
     </MainStack.Navigator>

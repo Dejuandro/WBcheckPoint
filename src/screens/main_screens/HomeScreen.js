@@ -1,7 +1,7 @@
 import React, { useState, useContext, useEffect, Component } from 'react';
-import { View, StyleSheet, Text, FlatList, TouchableWithoutFeedback, TouchableOpacity, Dimensions, Alert, Linking, Button, RefreshControl } from 'react-native';
-import SecureStorage from 'react-native-secure-storage';
-import { BASE_URL } from '../../config/index';
+import { View, StyleSheet, Text, FlatList, TouchableWithoutFeedback, TouchableOpacity, Dimensions, Alert, Linking, Button, RefreshControl, BackHandler } from 'react-native';
+import SecureStorage from '@react-native-community/async-storage';
+// import { BASE_URL} from '../../config/index';
 import { AuthContext } from '../../contexts/AuthContext';
 import { Loading } from '../../components/Loading';
 import { AuthContainer } from '../../components/AuthContainer'
@@ -9,11 +9,12 @@ import QRCodeScanner from 'react-native-qrcode-scanner';
 import { RNCamera } from 'react-native-camera';
 import { Icon } from 'react-native-elements'
 import Modal from 'react-native-modal';
+import Toast from 'react-native-simple-toast';
 
 export function HomeScreen({ navigation }) {
 
-
-  const [loading, setLoading] = useState(true);
+  const [exitApp, SETexitApp] = useState(false)
+  const [loading, setLoading] = useState(false);
   const [isRefreshing, setisRefreshing] = useState(false)
   const [fullName, setfullName] = useState()
   const [userName, setuserName] = useState()
@@ -31,33 +32,86 @@ export function HomeScreen({ navigation }) {
   const [ListWeighBridge, setListWeighBridge] = useState()
   const [ModalPilihan, setModalPilihan] = useState(false)
 
-  const wb = SecurityWeighBridgeCode
 
-  // useEffect(() => {
-  //   const unsubscribe = navigation.addListener('focus', () => {
-  //     console.log(wb)
-  //     HomePageRefresh();
-  //   });
+  var date = new Date().getDate(); //To get the Current Date
+  var month = new Date().getMonth() + 1; //To get the Current Month
+  var year = new Date().getFullYear(); //To get the Current Year
+  var hours = new Date().getHours(); //To get the Current Hours
+  var min = new Date().getMinutes(); //To get the Current Minutes
+  var sec = new Date().getSeconds();
+  const currentDate = (
+    date + '/' + month + '/' + year
+    + ' ' + hours + ':' + min + ':' + sec
+  );
 
-  //   return unsubscribe;
-  // }, [navigation]);
+  React.useEffect(() => {
+    const unsubscribe = navigation.addListener('focus', () => {
+      firstLoad()
+    });
+    return unsubscribe;
+  }, [navigation]);
 
   useEffect(() => {
+
     firstLoad()
+   
+
   }, [])
 
-  function HomePageRefresh(TimbanganCode, name) {
-    try {
-      // HIT API GET DAFTAR KENDARAAN SECURITY DISINI
-      fetch(`${BASE_URL}cpapi/v1/Transaction/WB_GetListVehicle/${TimbanganCode}/${name}`, {
+  //   useEffect(() =>
+  //   {
+  //       const backHandler = BackHandler.addEventListener(
+  //           "hardwareBackPress",
+  //           backAction
+  //       );
+  //       return () => backHandler.remove();
+  //   },[exitApp]) 
+
+
+  //   const backAction = () => {
+  //     if(exitApp==false){
+  //         SETexitApp(true);
+  //         Toast.showWithGravity('Tekan Sekali Lagi Untuk Keluar', Toast.LONG, Toast.TOP);
+  //         console.log(SecurityWeighBridge)
+  //         console.log(SecurityWeighBridgeCode)
+
+  //     }
+  //     else if(exitApp==true){
+  //         BackHandler.exitApp()
+  //     }
+
+  //     setTimeout(()=>{
+  //         SETexitApp(false)
+  //     }, 4000);
+  //     return true;
+  // };
+
+  async function HomePageRefresh(code, name, role) {
+    // _____________ Security _____________
+    if (role == 'Security') {
+      let respond = null
+
+      // setTimeout(() => {
+      //   if (respond == null) {
+      //     setLoading(false)
+      //     Alert.alert('Gagal Mengambil Data, Perikas Koneksi Anda, dan Coba Lagi')
+      //   }
+      // }, 25000)
+
+      const IpLocal = await SecureStorage.getItem('localhost')
+      const BASE_URL = JSON.parse(IpLocal)
+      await fetch(`${BASE_URL}cpapi/v1/Transaction/WB_GetListVehicle/${code}/${name}`, {
+        timeout: 500,
         method: 'Get',
         headers: {
           Accept: 'application/json',
           'Content-Type': 'application/json'
         }
       })
+
         .then((res) => {
-          console.log(res.status)
+          respond = res
+          console.log({ 'Get Security Transaction Data': res.status })
           if (res.status !== 200) {
             Alert.alert('Gagal Mengambil Daftar Timbangan')
           } else {
@@ -68,37 +122,80 @@ export function HomeScreen({ navigation }) {
           setDataSecurity(json.Data)
           setLoading(false)
         })
-    } catch {
-      Alert.alert('Error Pilih Timbangan')
+        .catch((error) => {
+          console.log(error)
+          Alert.alert('Gagal Mengambil Data, Perikas Koneksi Anda, dan Coba Lagi')
+          setLoading(false)
+        });
+
+
+    } else {
+      // _____________ Porter _____________
+        const IpLocal = await SecureStorage.getItem('localhost')
+        const BASE_URL = JSON.parse(IpLocal)
+      await fetch(`${BASE_URL}cpapi/v1/Transaction/Dock_GetListVehicle/${code}/${name}`, {
+        method: 'Get',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json'
+        }
+      })
+        .then((res) => {
+          console.log({ 'Get Porter Transaction Data': res.status })
+          if (res.status !== 200) {
+            Alert.alert('Gagal Mengambil Daftar Dock')
+            setLoading(false)
+          } else {
+            return res.json()
+          }
+        })
+        .then((json) => {
+          setDataPorter(json.Data)
+          setLoading(false)
+        })
+        .catch((error) => {
+          setLoading(false)
+          console.log(error)
+          Alert.alert('Gagal Mengambil Data, Perikas Koneksi Anda, dan Coba Lagi')
+        });
     }
   }
 
   async function firstLoad() {
     try {
-      await setLoading(true)
+      setLoading(true)
       const name = await SecureStorage.getItem('token')
-      await setuserName(JSON.parse(name))
+      setuserName(JSON.parse(name))
       const FullName = await SecureStorage.getItem('user_name')
-      await setfullName(JSON.parse(FullName))
+      setfullName(JSON.parse(FullName))
       const role = await SecureStorage.getItem('user_role')
-      await setuserRole(JSON.parse(role))
+      setuserRole(JSON.parse(role))
       const Porter = JSON.stringify("Porter")
       const TimbanganCode = await SecureStorage.getItem('TimbanganCode')
-      if (TimbanganCode !== null) {
+      setSecurityWeighBridgeCode(JSON.parse(TimbanganCode))
+      const NamaTimbanganCode = await SecureStorage.getItem('NamaTimbanganCode')
+      setSecurityWeighBridge(JSON.parse(NamaTimbanganCode))
+      const dockCode = await SecureStorage.getItem('dockCode')
+      setPorterdock(JSON.parse(dockCode))
+      if (TimbanganCode !== null || dockCode !== null) {
         console.log('Refresh Home Page')
-        // await setisRefreshing(true)
-        HomePageRefresh(JSON.parse(TimbanganCode), JSON.parse(name))
+        if (role == Porter) {
+          setIsPorter(true)
+          HomePageRefresh(JSON.parse(dockCode), JSON.parse(name), JSON.parse(role))
+        } else {
+          HomePageRefresh(JSON.parse(TimbanganCode), JSON.parse(name), JSON.parse(role))
+        }
       } else {
         console.log('Hit FirstLoad')
         if (role == Porter) {
           console.log('You Are Porter')
-          await setIsPorter(true)
-          await getDockList(JSON.parse(name), JSON.parse(role))
+          setIsPorter(true)
+          getDockList(JSON.parse(name), JSON.parse(role))
         } else {
           console.log('You Are Security')
-          await getWeighBridgeList(JSON.parse(name), JSON.parse(role))
+          getWeighBridgeList(JSON.parse(name), JSON.parse(role))
         }
-        await setLoading(false)
+        setLoading(false)
       }
     } catch {
       Alert.alert('Error')
@@ -106,6 +203,9 @@ export function HomeScreen({ navigation }) {
   }
 
   async function getWeighBridgeList(nameUser, roleUser) {
+    
+    const IpLocal = await SecureStorage.getItem('localhost')
+    const BASE_URL = JSON.parse(IpLocal)
     await fetch(`${BASE_URL}cpapi/v1/Master/GetWBByRole/${nameUser}/${roleUser}`, {
       method: 'Get',
       headers: {
@@ -126,9 +226,17 @@ export function HomeScreen({ navigation }) {
         setListWeighBridge(json.Data)
         setLoading(false)
       })
+      .catch((error) => {
+        setLoading(false)
+        console.log(error)
+        Alert.alert('Gagal Mengambil Data, Perikas Koneksi Anda, dan Coba Lagi')
+      });
   }
 
   async function getDockList(nameUser, roleUser) {
+    
+    const IpLocal = await SecureStorage.getItem('localhost')
+    const BASE_URL = JSON.parse(IpLocal)
     await fetch(`${BASE_URL}cpapi/v1/Master/GetDockByRole/${nameUser}/${roleUser}`, {
       method: 'Get',
       headers: {
@@ -148,81 +256,13 @@ export function HomeScreen({ navigation }) {
         setListDock(json.Data)
         setLoading(false)
       })
+      .catch((error) => {
+        setLoading(false)
+        console.log(error)
+        Alert.alert('Gagal Mengambil Data, Perikas Koneksi Anda, dan Coba Lagi')
+      });
   }
 
-
-
-  const List_LoadDoc =
-  {
-    "dock": [
-      {
-        "dock": "1",
-        "dockCode": "001",
-        "Lokasi": "Pintu Timur 001"
-      }, {
-        "dock": "2",
-        "dockCode": "002",
-        "Lokasi": "Pintu Timur 002"
-      }, {
-        "dock": "3",
-        "dockCode": "003",
-        "Lokasi": "Pintu Barat 001"
-      }, {
-        "dock": "4",
-        "dockCode": "004",
-        "Lokasi": "Pintu Utara 001"
-      }, {
-        "dock": "5",
-        "dockCode": "005",
-        "Lokasi": "Pintu Selatan 001"
-      },]
-  }
-
-  const vehicle_list_Porter =
-  {
-    "DataList": [
-      {
-        "no_plat": "B 3324 NO",
-        "ID_DOC": "ID322",
-        "vendor": "PT. KESATRIA",
-        "nama_supir": "Alimin",
-        "status": "Loading",
-        "tanggal": "24/10/2020",
-        "pukul": "09:12"
-      }, {
-        "no_plat": "BK 2299 JA",
-        "ID_DOC": "ID390",
-        "vendor": "PT. CAHAYA ABADI",
-        "nama_supir": "Anto",
-        "status": "Loading",
-        "tanggal": "24/10/2020",
-        "pukul": "10:09"
-      }, {
-        "no_plat": "D 8922 OP",
-        "ID_DOC": "ID382",
-        "vendor": "PT. KESATRIA",
-        "nama_supir": "ANDRI",
-        "status": "Unloading",
-        "tanggal": "24/10/2020",
-        "pukul": "12:12"
-      }, {
-        "no_plat": "BA 1123 TT",
-        "ID_DOC": "ID230",
-        "vendor": "PT. CAHAYA ABADI",
-        "nama_supir": "SEBASTIAN",
-        "status": "Loading",
-        "tanggal": "24/10/2020",
-        "pukul": "13:22"
-      }, {
-        "no_plat": "DK 3029 KP",
-        "ID_DOC": "ID932",
-        "vendor": "PT. MAHKOTA ABADI",
-        "nama_supir": "DION",
-        "status": "Unloading",
-        "tanggal": "24/10/2020",
-        "pukul": "17:12"
-      }]
-  }
 
   function emptyVehicleList() {
     return (
@@ -232,11 +272,7 @@ export function HomeScreen({ navigation }) {
           onPress={async () => {
             try {
               await setLoading(true)
-              if (userRole == 'Security') {
-                await OnClickPilihTimbangan(SecurityWeighBridge, SecurityWeighBridgeCode)
-              } else {
-                await OnClickPilihdock(Porterdock)
-              }
+              firstLoad()
             } catch {
               Alert.alert('Error, Coba lagi !')
             }
@@ -282,11 +318,20 @@ export function HomeScreen({ navigation }) {
     async function onSuccess(e) {
       try {
         await setLoading(true)
-        {
+        console.log(userRole)
+        if (userRole == "Porter") {
+          navigation.navigate('PorterDetailScreen', {
+            id_transaksi: e.data,
+            username: userName,
+            dockCode: Porterdock,
+            checkIn: currentDate
+          })
+        } else {
           navigation.navigate('SecurityDetailScreen', {
             ID_Number: e.data,
             UserName: userName,
-            wbcode: SecurityWeighBridgeCode
+            wbcode: SecurityWeighBridgeCode,
+            checkIn: currentDate
           })
         }
       } catch {
@@ -368,6 +413,17 @@ export function HomeScreen({ navigation }) {
         </View>
         {/* Data Vendor*/}
 
+         {/* Data Kendaraan*/}
+         <View style={{
+          flex: 1,
+          flexDirection: 'row',
+          alignItems: 'center'
+        }}>
+          <Text style={{ color: 'black' }}>Kendaraan : </Text>
+          <Text style={{ flexWrap: 'wrap', color: 'black', fontSize: 16 }}>{item.kendaraan}</Text>
+        </View>
+        {/* Data Kendaraan*/}
+
         {/* Data Supir*/}
         <View style={{
           flex: 1,
@@ -403,8 +459,11 @@ export function HomeScreen({ navigation }) {
   async function OnClickPilihTimbangan(NamaTimbangan, TimbanganCode) {
     if (TimbanganCode !== undefined || NamaTimbangan !== undefined) {
       try {
+        
+        const IpLocal = await SecureStorage.getItem('localhost')
+        const BASE_URL = JSON.parse(IpLocal)
         // HIT API GET DAFTAR KENDARAAN SECURITY DISINI
-        await fetch(`${BASE_URL}cpapi/v1/Transaction/WB_GetListVehicle/${TimbanganCode}/${userName}`, {
+        fetch(`${BASE_URL}cpapi/v1/Transaction/WB_GetListVehicle/${TimbanganCode}/${userName}`, {
           method: 'Get',
           headers: {
             Accept: 'application/json',
@@ -412,7 +471,7 @@ export function HomeScreen({ navigation }) {
           }
         })
           .then((res) => {
-            console.log(res.status)
+            console.log({ "Pilih Timbangan": res.status })
             if (res.status !== 200) {
               Alert.alert('Gagal Mengambil Daftar Timbangan')
             } else {
@@ -423,15 +482,21 @@ export function HomeScreen({ navigation }) {
             setDataSecurity(json.Data)
             setLoading(false)
           })
+          .catch((error) => {
+            setLoading(false)
+            console.log(error)
+            Alert.alert('Gagal Mengambil Data, Periksa Koneksi Anda, dan Coba Lagi')
+          });
 
         // await setDataSecurity(vehicle_list_security)
-        await setSecurityWeighBridge(NamaTimbangan)
-        await setSecurityWeighBridgeCode(TimbanganCode)
-        await SecureStorage.setItem('TimbanganCode', JSON.stringify(TimbanganCode))
+        setSecurityWeighBridge(NamaTimbangan)
+        setSecurityWeighBridgeCode(TimbanganCode)
+        SecureStorage.setItem('TimbanganCode', JSON.stringify(TimbanganCode))
+        SecureStorage.setItem('NamaTimbanganCode', JSON.stringify(NamaTimbangan))
       } catch {
         Alert.alert('Error Pilih Timbangan')
       } finally {
-        await setLoading(false)
+        setLoading(false)
       }
     }
   }
@@ -477,10 +542,10 @@ export function HomeScreen({ navigation }) {
         {SecurityWeighBridgeCode ? <View /> : PilihWeighBridge()}
         <View style={styles.header} >
           <Text style={{ color: 'black', fontSize: 16 }}>{fullName} </Text>
-         <View style={{alignItems:'center'}}>
-         <Text style={{ flexWrap: 'wrap', color: 'black', fontSize: 15 }} >Role</Text>
-         <Text style={{ color: 'black', fontSize: 23, fontWeight: 'bold', marginTop:-5 }}>{userRole}</Text>
-         </View>
+          <View style={{ alignItems: 'center' }}>
+            <Text style={{ flexWrap: 'wrap', color: 'black', fontSize: 15 }} >Role</Text>
+            <Text style={{ color: 'black', fontSize: 23, fontWeight: 'bold', marginTop: -5 }}>{userRole}</Text>
+          </View>
           <TouchableOpacity
             onPress={async () => {
               try {
@@ -510,6 +575,7 @@ export function HomeScreen({ navigation }) {
                   await setLoading(true)
                   await setSecurityWeighBridgeCode(null)
                   await SecureStorage.removeItem('TimbanganCode');
+                  await SecureStorage.removeItem('NamaTimbanganCode');
                   await firstLoad()
                   await setModalPilihan(true)
                 } catch {
@@ -536,9 +602,9 @@ export function HomeScreen({ navigation }) {
                   var year = new Date().getFullYear(); //To get the Current Year
                   var hours = new Date().getHours(); //To get the Current Hours
                   var min = new Date().getMinutes(); //To get the Current Minutes
-                  var sec = new Date().getSeconds(); 
+                  var sec = new Date().getSeconds();
                   const currentDate = (
-                    date + '/' + month + '/' + year 
+                    date + '/' + month + '/' + year
                     + ' ' + hours + ':' + min + ':' + sec
                   );
 
@@ -546,7 +612,7 @@ export function HomeScreen({ navigation }) {
                     ID_Number: item.id_transaksi,
                     UserName: userName,
                     wbcode: SecurityWeighBridgeCode,
-                    checkIn : currentDate
+                    checkIn: currentDate
                   })
                 }}
               >
@@ -567,7 +633,7 @@ export function HomeScreen({ navigation }) {
                 } catch {
                   Alert.alert('error')
                 } finally {
-                  await setTimeout(() => { setLoading(false) }, 2000)
+               await   setLoading(false)
                 }
               }}
             ><Icon
@@ -590,7 +656,9 @@ export function HomeScreen({ navigation }) {
 
     if (dockCode !== undefined) {
       try {
-        // HIT API GET DAFTAR KENDARAAN SECURITY DISINI
+        // HIT API GET DAFTAR KENDARAAN Porter  DISINI
+        const IpLocal = await SecureStorage.getItem('localhost')
+        const BASE_URL = JSON.parse(IpLocal)
         await fetch(`${BASE_URL}cpapi/v1/Transaction/Dock_GetListVehicle/${dockCode}/${userName}`, {
           method: 'Get',
           headers: {
@@ -599,9 +667,10 @@ export function HomeScreen({ navigation }) {
           }
         })
           .then((res) => {
-            console.log(res.status)
+            console.log({ "Pilih Dock": res.status })
             if (res.status !== 200) {
               Alert.alert('Gagal Mengambil Daftar Dock')
+              setLoading(false)
             } else {
               return res.json()
             }
@@ -610,11 +679,17 @@ export function HomeScreen({ navigation }) {
             setDataPorter(json.Data)
             setLoading(false)
           })
+          .catch((error) => {
+            setLoading(false)
+            console.log(error)
+            Alert.alert('Gagal Mengambil Data, Periksa Koneksi Anda, dan Coba Lagi')
+          });
 
         // await setDataSecurity(vehicle_list_security)
         await setPorterdock(dockCode)
+        SecureStorage.setItem('dockCode', JSON.stringify(dockCode))
       } catch {
-        Alert.alert('Error Pilih Timbangan')
+        Alert.alert('Error Memilih Timbangan')
       } finally {
         await setLoading(false)
       }
@@ -634,6 +709,8 @@ export function HomeScreen({ navigation }) {
           <FlatList
             showsVerticalScrollIndicator={false}
             ListEmptyComponent={emptyWBDOCKList}
+            refreshControl={<RefreshControl refreshing={isRefreshing}
+              onRefresh={() => { firstLoad() }} />}
             data={ListDock}
             keyExtractor={({ DockCode }, index) => DockCode}
             renderItem={({ item }) => (
@@ -664,10 +741,10 @@ export function HomeScreen({ navigation }) {
         {Porterdock ? <View /> : pilihdock()}
         <View style={styles.header} >
           <Text style={{ color: 'black', fontSize: 16 }}>{fullName} </Text>
-         <View style={{alignItems:'center'}}>
-         <Text style={{ flexWrap: 'wrap', color: 'black', fontSize: 15 }} >Role</Text>
-         <Text style={{ color: 'black', fontSize: 23, fontWeight: 'bold', marginTop:-5 }}>{userRole}</Text>
-         </View>
+          <View style={{ alignItems: 'center' }}>
+            <Text style={{ flexWrap: 'wrap', color: 'black', fontSize: 15 }} >Role</Text>
+            <Text style={{ color: 'black', fontSize: 23, fontWeight: 'bold', marginTop: -5 }}>{userRole}</Text>
+          </View>
           <TouchableOpacity
             onPress={async () => {
               try {
@@ -696,6 +773,7 @@ export function HomeScreen({ navigation }) {
                 try {
                   await setLoading(true)
                   await setPorterdock(null)
+                  await SecureStorage.removeItem('dockCode');
                   await firstLoad()
                   await setModalPilihan(true)
                 } catch {
@@ -709,16 +787,20 @@ export function HomeScreen({ navigation }) {
           showsVerticalScrollIndicator={false}
           style={{ alignSelf: 'center' }}
           ListEmptyComponent={emptyVehicleList}
+          refreshControl={<RefreshControl refreshing={isRefreshing}
+            onRefresh={() => { firstLoad() }} />}
           data={dataPorter}
           keyExtractor={({ id_transaksi }, index) => id_transaksi}
           renderItem={({ item }) => (
             <View>
               <TouchableWithoutFeedback
                 onPress={() => {
+
                   navigation.navigate('PorterDetailScreen', {
                     id_transaksi: item.id_transaksi,
                     username: userName,
-                    dockCode: Porterdock
+                    dockCode: Porterdock,
+                    checkIn: currentDate
                   })
                 }}
               >
@@ -740,7 +822,7 @@ export function HomeScreen({ navigation }) {
                 } catch {
                   Alert.alert('error')
                 } finally {
-                  await setTimeout(() => { setLoading(false) }, 2000)
+                  await setLoading(false)
                 }
               }}
             ><Icon

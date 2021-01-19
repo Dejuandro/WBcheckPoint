@@ -1,6 +1,6 @@
 import React, { useState, useContext, useEffect } from 'react';
 import { View, StyleSheet, Text, FlatList, TouchableWithoutFeedback } from 'react-native';
-import SecureStorage from 'react-native-secure-storage';
+import SecureStorage from '@react-native-community/async-storage';
 import { BASE_URL } from '../../config/index';
 import { AuthContext } from '../../contexts/AuthContext';
 import { Loading } from '../../components/Loading';

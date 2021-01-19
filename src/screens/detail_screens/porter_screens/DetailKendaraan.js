@@ -25,6 +25,29 @@ export function DetailKendaraan({ data_detail }) {
     )
   }
 
+  function dockType(dockType) {
+    if (dockType == 'Unloading_Dock') {
+      return (
+        <View>
+          <Text style={{ fontSize: 20, fontWeight: 'bold' }}>UNLOADING BARANG</Text>
+          <Text style={{fontSize:12, color:'red'}}>*Harap Melakukan Cek Ulang Untuk Barang Yang di UNLOADING</Text>
+        </View>
+      )
+    } else {
+      if (dockType == 'Loading_Dock') {
+        return (
+          <View>
+          <Text style={{ fontSize: 20, fontWeight: 'bold' }}>LOADING BARANG</Text>
+          <Text style={{fontSize:12, color:'red'}}>*Harap Melakukan Cek Ulang Untuk Barang Yang di LOADING</Text>
+          </View>
+        )
+      } else {
+        return (
+          <Text style={{ fontSize: 20, fontWeight: 'bold' }}>Tipe Tidak Ditemukan</Text>)
+      }
+    }
+  }
+
   return (
     <View style={{ flex: 1, padding: 20 }}>
 
@@ -50,6 +73,7 @@ export function DetailKendaraan({ data_detail }) {
         <Text style={{ fontSize: 16 }}>Kendaraan : {data_detail.Data.kendaraan}</Text>
         <Text style={{ fontSize: 16 }}>Vendor : {data_detail.Data.vendor}</Text>
         <Text style={{ fontSize: 16 }}>Supir : {data_detail.Data.nama_supir}</Text>
+        <View style={{marginTop:10}}>{dockType(data_detail.Data.docType)}</View>
       </View>
     </View>
 
@@ -59,13 +83,16 @@ export function DetailKendaraan({ data_detail }) {
         ListEmptyComponent={listEmpty()}
         ListHeaderComponent={<Text style={{ fontWeight: 'bold', fontSize: 20 }}>List Dock Transaksi</Text>}
         showsVerticalScrollIndicator={false}
-        data={data_detail.Data.DockList}
-        keyExtractor={({ DockCode }, index) => DockCode}
-        renderItem={({ item }) => (
+          data={data_detail.Data.DockList}
+          keyExtractor={({ DockCode }, index) => DockCode}
+          renderItem={({ item }) => (
 
-          <View style={{ flexDirection: 'row', paddingHorizontal: 10, padding: 5, alignItems: 'center', alignSelf: 'flex-start', justifyContent: 'space-between', width: '100%' }}>
-            <Text style={{ fontWeight: 'bold' }}>{item.DockCode}</Text>
-            {item.DockStatus ?
+            <View style={{ flexDirection: 'row', paddingHorizontal: 10, padding: 5, alignItems: 'center', alignSelf: 'flex-start', justifyContent: 'space-between', width: '100%' }}>
+
+              <Text style={{ fontWeight: 'bold' }}>{item.DockCode}</Text>
+              {Proses(item.DockStatus)}
+              {IconProses(item.DockStatus)}
+              {/* {item.DockStatus ?
               <Text>Proses</Text> :
               <Text>Selesai</Text>}
             {item.DockStatus ?
@@ -82,18 +109,44 @@ export function DetailKendaraan({ data_detail }) {
                 type='ionicon'
                 color='green'
                 onPress={() => { setimageView(false) }}
-              />}
-          </View>
-        )} />
-    </View>
+              />} */}
+            </View>
+          )} />
+      </View>
     <View style={{ marginTop: 25 }} >
       <Button title={'Submit'} onPress={()=>{kirimData()}} />
       <Text style={{ color: 'red', marginTop: 10 }}>*Pastikan semua data terisi dengan benar</Text>
     </View>
   </View>
-
-
   )
+}
+
+function Proses(dockStatus) {
+  if (dockStatus == 'false') {
+    return <Text> Proses</Text>
+  } else {
+    return <Text>Selesai </Text>
+  }
+}
+
+function IconProses(dockStatus) {
+  if (dockStatus == 'false') {
+    return <Icon
+      size={20}
+      name='md-logo-flickr'
+      type='ionicon'
+      color='#1f94c2'
+      onPress={() => { setimageView(false) }}
+    />
+  } else {
+    return <Icon
+      size={20}
+      name='md-checkmark-circle'
+      type='ionicon'
+      color='green'
+      onPress={() => { setimageView(false) }}
+    />
+  }
 }
 
 const styles = StyleSheet.create({

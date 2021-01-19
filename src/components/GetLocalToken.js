@@ -1,5 +1,5 @@
 
-import SecureStorage from 'react-native-secure-storage';
+import SecureStorage from '@react-native-community/async-storage';
 import React,{useState} from 'react';
 
 

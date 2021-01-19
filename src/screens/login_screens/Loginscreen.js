@@ -42,18 +42,19 @@ export function Loginscreen({ navigation }) {
     
     const [loading, setLoading] = useState(false);
     const {Loginfunction} = useContext(AuthContext);
-    const [email, setEmail] = useState("porter1");
-    const [password, setPassword] = useState('1')
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState('')
     const [required, setRequired] = useState(false)
 
 
 
     return (
         // <AuthContainer>
-        <ImageBackground source={require('../../components/img/blurWallpaper.jpg')} style={styles.image}>
+        <ImageBackground source={require('../../components/img/truckBg.png')} style={styles.image}>
             <AuthContainer>
-                <Text style={styles.loginTitle}> Selamat Datang</Text>
-                <InputText style={styles.TextInput} placeholder={'Email'} secureTextEntry={false}  value={email} onChangeText={setEmail} keyboardType="email-address" />
+              <View style={{alignItems:'center', backgroundColor: 'rgba(52,52,52, 0.6)',opacity:90, width:'100%', marginTop:'35%' ,padding:20, borderRadius:10}}>
+              <Text style={styles.loginTitle}> Selamat Datang</Text>
+                <InputText style={styles.TextInput} placeholder={'Username'} secureTextEntry={false}  value={email} onChangeText={setEmail} keyboardType="email-address" />
                 <InputText style={styles.TextInput} placeholder={'Password'} secureTextEntry={true} required={true} value={password} onChangeText={setPassword} />
                 <View style={{ alignSelf: 'flex-start' }}>
                     <Text style={{ color: 'red', fontSize: 15 }}>{required ? "*Error Login*" : ""}</Text>
@@ -65,7 +66,7 @@ export function Loginscreen({ navigation }) {
                             setLoading(true)
                             await Loginfunction(email, password)
                         }
-                        catch {
+                        catch{
                             setLoading(false)
                             setRequired(true)
                             setTimeout(function () {
@@ -82,9 +83,10 @@ export function Loginscreen({ navigation }) {
                         activeOpacity={0.1}
                         style={styles.termsAndConditionsBtn}
                         onPress={() => navigation.navigate('Terms_and_conditions')}>
-                        <Text style={styles.aturan_app}> Aturan Aplikasi</Text>
+                        <Text style={styles.aturan_app}> Pengaturan Aplikasi</Text>
                     </TouchableWithoutFeedback>
                 </View>
+              </View>
                 <Loading loading={loading} />
             </AuthContainer>
         </ImageBackground>
@@ -100,7 +102,7 @@ const styles = StyleSheet.create({
         alignItems: 'center'
     },
     aturan_app: {
-        color: 'black',
+        color: 'white',
         fontSize: 20,
         textDecorationLine: 'underline',
         marginTop: 20
@@ -111,13 +113,13 @@ const styles = StyleSheet.create({
         justifyContent: "center"
     },
     loginTitle: {
-        marginTop:50,
+        marginTop:30,
         fontSize: 40,
         marginBottom: 30,
         color: 'white'
     },
     loginBtn: {
-        backgroundColor: '#677e80',
+        backgroundColor: '#2f4f4f',
         borderRadius: 5,
         padding: 10,
         width: '100%',

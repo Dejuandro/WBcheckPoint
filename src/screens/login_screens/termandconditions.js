@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
     SafeAreaView,
     StyleSheet,
@@ -11,13 +11,44 @@ import {
     Alert,
     TouchableHighlight
 } from 'react-native';
+import SecureStorage from '@react-native-community/async-storage';
 
 
 export default function termandconditions ({navigation}) {
+
+
+    const [LocalHost, setLocalHost] = useState()
+    const [InputLocalHost, setInputLocalHost] = useState(LocalHost)
+
+    
+useEffect(() => {
+
+    getLocalHost()
+
+  }, [])
+
+ async function getLocalHost(){
+      
+    const IpLocal = await SecureStorage.getItem('localhost')
+     await setLocalHost(IpLocal)
+  }
+
     
     return (
         <View style={styles.container}>
-            <Text style={styles.loginTitle}> Term And Conditions</Text>
+            <Text style={styles.loginTitle}> Pengaturan IP </Text>
+            <TextInput style={{borderWidth:0.7, borderColor:'grey', borderRadius:10, backgroundColor:'white', width:200, height:35}} placeholder='Input  Local IP ...' value={InputLocalHost} onChangeText={setInputLocalHost}/>
+            <Text style={{marginBottom:20}}>Ex: 192.168.1.1</Text>
+            <Button title={'Submit'}
+                onPress={async () => {
+                    await SecureStorage.setItem('localhost', JSON.stringify(('http://' + InputLocalHost + ':8080/rest/')));
+                    const IP = await SecureStorage.getItem('localhost')
+                    await setLocalHost(IP)
+                    Alert.alert('IP Tersimpan')
+                    navigation.popToTop()
+                }} />
+            <Text style={{paddingTop:10}}>Current Local IP  :</Text>
+            <Text> {LocalHost}</Text>
         </View>
     );
   }

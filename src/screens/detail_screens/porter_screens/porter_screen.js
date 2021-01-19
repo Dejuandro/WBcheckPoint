@@ -4,7 +4,8 @@ import { createMaterialTopTabNavigator } from '@react-navigation/material-top-ta
 import {ListBarang} from './ListBarang'
 import { Loading } from '../../../components/Loading';
 import {PorterContext} from '../../../contexts/PorterContext'
-import { BASE_URL } from '../../../config/index';
+import SecureStorage from '@react-native-community/async-storage';
+// import { BASE_URL} from '../../../config/index';
 import {DetailKendaraan} from './DetailKendaraan'
 
 
@@ -16,65 +17,19 @@ export function PorterDetailScreen({ route, navigation }) {
 
   
   const [DetailData, setDetailData] = useState()
+  const [ItemListData, setItemListData] = useState()
   const [loading, setLoading] = useState(true)
   
   useEffect(() => {
     getDataDetails()
   }, [])
 
-  
-  const data_listBarang = {
-    "dock": route.params.dock,
-    "status": "200",
-    "message": "sukses",
-    "Data": {
-      "id_transaksi": route.params.id_transaksi,
-      "nama_supir": "Janurdin",
-      "No_Plat": "B 3244 NO",
-      "tanggal": "24/10/2020",
-      "pukul": "'09:12'",
-      "vendor": "PT. Kesatria",
-      "status": "Dock",
-      "Item": [
-        {
-          "itemCode": "001",
-          "nama": "Beras",
-          "jumlah": "25 karung",
-          "itemStatus": "false",
-        }, {
-          "itemCode": "002",
-          "nama": "Tepung Terigu",
-          "jumlah": "35 Karung",
-          "itemStatus": "false",
-        }, {
-          "itemCode": "003",
-          "nama": "Gula",
-          "jumlah": "12 Karung",
-          "itemStatus": "false",
-        }, {
-          "itemCode": "004",
-          "nama": "Besi Ulir",
-          "jumlah": "120 Batang",
-          "itemStatus": "false",
-        }
-      ],
-      "DockList": [
-        {
-          "DockName": "Dock 001",
-          "DockCode": "dock001",
-          "DockStatus": "false"
-        }, {
-          "DockName": "Dock 002",
-          "DockCode": "dock002",
-          "DockStatus": "false"
-        }
-      ]
-    }
-  }
-
 
   async function getDataDetails() {
     try {
+      
+      const IpLocal = await SecureStorage.getItem('localhost')
+      const BASE_URL = JSON.parse(IpLocal)
       await fetch(`${BASE_URL}cpapi/v1/Transaction/Dock_GetDetailVehicle/${route.params.id_transaksi}/${route.params.username}/${route.params.dockCode}`, {
         method: 'Get',
         headers: {
@@ -114,13 +69,96 @@ export function PorterDetailScreen({ route, navigation }) {
     () => ({
 
       dataList: (ListItem) => {
-        console.log(ListItem)
+        setItemListData(ListItem)
       },
       kirimData: () => {
-        console.log('Hit Kirim')
+        try {
+          setLoading(true)
+
+          const data = ItemListData.map(ItemListLoop => {
+            if (ItemListLoop.itemStatus == "Proses" && ItemListLoop.image == "" ) {
+              Alert.alert("Gambar " + ItemListLoop.nama + " Harus Di Isi")
+              setLoading(false)
+              return false
+            } else {
+              if (ItemListLoop.itemStatus == "Tolak" && ItemListLoop.note == "") {
+                Alert.alert("Note" + ItemListLoop.nama + " Harus Di Isi")
+                setLoading(false)
+                return false
+              } else {
+                return true
+              }
+            }
+          })
+
+          kirimData(data)
+
+        } catch {
+          Alert.alert('Error Mengirim Data, Coba Lagi !')
+        }
       }
     }),
   );
+
+  async function kirimData(data) {
+    function isTrue(n) {
+      return n == true;
+    }
+
+    const isValid = await data.every(isTrue)
+    if (isValid == true) {
+      var date = new Date().getDate(); //To get the Current Date
+      var month = new Date().getMonth() + 1; //To get the Current Month
+      var year = new Date().getFullYear(); //To get the Current Year
+      var hours = new Date().getHours(); //To get the Current Hours
+      var min = new Date().getMinutes(); //To get the Current Minutes
+      var sec = new Date().getSeconds();
+      const currentDate = (
+        date + '/' + month + '/' + year
+        + ' ' + hours + ':' + min + ':' + sec
+      );
+      const PostData = {
+        "checkIn": route.params.checkIn,
+        "checkOut": currentDate,
+        "username": route.params.username,
+        "id_transaksi": route.params.id_transaksi,
+        "dockCode": route.params.dockCode,
+        "Item": ItemListData
+      }
+      // console.log(PostData)
+      
+      const IpLocal = await SecureStorage.getItem('localhost')
+      const BASE_URL = JSON.parse(IpLocal)
+      await fetch(`${BASE_URL}cpapi/v1/Transaction/Dock_PostData`, {
+        method: 'Post',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json'
+        },  
+        body: JSON.stringify(PostData)
+      })
+        .then((res) => {
+          console.log(res.status)
+          if (res.status !== 200) {
+            console.log('Gagal Meyimpan Data')
+            Alert.alert('Gagal Menyimpan Data, Ulangi Lagi ! ' + res.message)
+            setLoading(false)
+          } else {
+            return res.json()
+              .then((json) => {
+                console.log(json)
+                Alert.alert('Sukses Mengirim Data Transaksi ' + PostData.id_transaksi)
+                // console.log(json)
+                navigation.push('Homescreen')
+              })
+          }
+        })
+
+
+    } else {
+      console.log('Data Masih Error')
+    }
+  }
 
   return (
     <PorterContext.Provider value={Value}>

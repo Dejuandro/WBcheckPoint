@@ -12,8 +12,8 @@ export function Loading({loading}) {
       <View style={styles.container}>
         {/* <AwesomeLoading indicatorId={2} size={50} text='Loading...' isActive={true}/> */}
         <FastImage
-            style={{ width: 50, height: 50 }}
-            source={require("../components/indicators/indicator18.gif")}
+            style={{ width: 75, height: 75 }}
+            source={require("../components/indicators/indicator5.gif")}
             resizeMode={FastImage.resizeMode.contain}
           />
         <Text style={styles.text}>Loading..</Text>

@@ -3,6 +3,7 @@ import { Text, View, StyleSheet, Dimensions, TextInput, TouchableOpacity, Button
 import { RNCamera, FaceDetector } from 'react-native-camera';
 import { BeratContext } from '../../../contexts/BeratContext'
 import Modal from 'react-native-modal';
+import NumberFormat from 'react-number-format'
 import { Icon } from 'react-native-elements'
 
 
@@ -117,8 +118,8 @@ function BeratKendaraan({ data_detail, navigation }) {
 
         <View style={{ alignItems: 'center', alignSelf: 'flex-start', alignItems: 'flex-start' }}>
           <Text style={{ fontSize: 25, fontWeight: 'bold', marginTop: 30 }}>Berat Kendaraan</Text>
+        <Text style={{marginLeft:20, fontSize: 16}}>Berat : {data_detail.berat}</Text>
         </View>
-
 
         <View style={{
           flexDirection: 'row',
@@ -128,7 +129,20 @@ function BeratKendaraan({ data_detail, navigation }) {
           alignItems: 'center'
         }}>
           <Text style={{ fontSize: 16 }}>Berat :</Text>
-          <TextInput style={styles.TextInput} placeholder={'Kilogram'} editable={true} keyboardType={"numeric"} value={Berat} onChangeText={setBerat} />
+          <TextInput style={styles.TextInput} placeholder={'Kilogram'} editable={true} keyboardType={"numeric"} value={Berat} onChangeText={(val)=>{
+           const number = new Promise((resolve, reject)=>{
+            resolve(val)
+           });
+           number.then(numb=>{
+             setBerat(numb)
+           })
+          }} />
+          <NumberFormat
+            value={Berat}
+            displayType={'text'}
+            thousandSeparator={true}
+            renderText={formattedValue => <Text>{formattedValue} KG </Text>} // <--- Don't forget this!
+          />
         </View>
 
         <View style={{ alignItems: 'flex-start' }}>

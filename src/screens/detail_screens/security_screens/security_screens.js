@@ -4,8 +4,9 @@ import { createMaterialTopTabNavigator } from '@react-navigation/material-top-ta
 import BeratKendaraan from './beratkendaraan'
 import {BeratContext} from '../../../contexts/BeratContext'
 import {KondisiKendaraan} from './kondisikendaraan'
+import SecureStorage from '@react-native-community/async-storage';
 import { Loading } from '../../../components/Loading';
-import { BASE_URL } from '../../../config/index';
+// import { BASE_URL } from '../../../config/index';
 import { cos } from 'react-native-reanimated';
 
 
@@ -27,6 +28,9 @@ export function SecurityDetailScreen({ route,navigation }) {
   }, [])
 
   async function getDataDetails() {
+    
+    const IpLocal = await SecureStorage.getItem('localhost')
+    const BASE_URL = JSON.parse(IpLocal)
     await fetch(`${BASE_URL}cpapi/v1/Transaction/WB_GetVehicleDetails/${route.params.ID_Number}/${route.params.UserName}/${route.params.wbcode}`, {
       method: 'Get',
       headers: {
@@ -38,12 +42,12 @@ export function SecurityDetailScreen({ route,navigation }) {
         if (res.status == 400) {
           const resJson = await res.json()
           Alert.alert("Timbangan Seharusnya : " + '\n' + resJson.Data)
-          navigation.popToTop()
+          navigation.push('Homescreen')
         } else {
           if (res.status !== 200) {
             console.log(res)
             Alert.alert('Gagal Mengambil Daftar Timbangan')
-            navigation.popToTop()
+            navigation.push('Homescreen')
           } else {
             const resJson = await res.json()
             setDataDetail(resJson)
@@ -101,6 +105,7 @@ export function SecurityDetailScreen({ route,navigation }) {
         
         if (DataBeratKendaraan.Berat == null || DataBeratKendaraan.NoteBerat == null || DataBeratKendaraan.GambarBeratMobil == null) {
           Alert.alert('Semua Data Berat Kendaraan Harus Di isi')
+          setLoading(false)
         } else {
           try {
             var tmp = []
@@ -161,6 +166,9 @@ export function SecurityDetailScreen({ route,navigation }) {
           "DataBerat": DataBeratKendaraan,
           "DataKondisi": DataKondisiKendaraan.kelengkapan
         }
+        
+        const IpLocal = await SecureStorage.getItem('localhost')
+        const BASE_URL = JSON.parse(IpLocal)
         await fetch(`${BASE_URL}cpapi/v1/Transaction/WB_PostData`, {
           method: 'Post',
           headers: {
@@ -180,7 +188,7 @@ export function SecurityDetailScreen({ route,navigation }) {
           .then((json) => {
             Alert.alert('Sukses Mengirim Data Transaksi '+ PostData.id_transaksi)
             console.log(json)
-            navigation.push('Homescreen')
+            navigation.popToTop()
 
           })
       }
